@@ -15,7 +15,7 @@ const Tasks=(()=>{
  const fnum=x=>String(+x.toFixed(6)).replace('.',',');
  const blanks=e=>e.replace(/\d+(?:[.,]\d+)?/g,'▢').replace(/\(▢\)/g,'▢');
  function mkRec(m){const sg=m.given.filter(q=>q.conv&&q.conv!=='—').map(q=>q.conv),ans=fnum(+m.find.ans.toFixed(m.find.round>0?m.find.round:0)),u=m.find.unit;
-  return ['Дано: '+m.given.map(q=>q.sym+' = '+q.val+(q.unit?' '+q.unit:'')).join('; '),'Знайти: '+m.find.s+' — ?','СІ: '+(sg.length?sg.join('; '):'усе вже в СІ'),'Формула: '+m.formulas[0].t,'Розв’язання: '+m.find.s+' = '+m.expr.replace(/×/g,'·').replace(/÷/g,'/')+' ≈ '+ans+' '+u,'Відповідь: '+m.find.s+' ≈ '+ans+' '+u]}
+  return ['Дано: '+m.given.map(q=>q.sym+' = '+q.val+(q.unit?' '+q.unit:'')).join('; '),'Знайти: '+m.find.s+' — ?','СІ: '+(sg.length?sg.join('; '):'усе вже в СІ'),'Формула: '+m.formulas[0].t,'Розв’язання: '+m.find.s+' = '+m.expr.replace(/×/g,'·').replace(/÷/g,'/')+' ≈ '+(m.find.si!=null?fnum(m.find.si)+' '+m.find.siUnit+' = '+ans+' '+u:ans+' '+u),'Відповідь: '+m.find.s+' ≈ '+ans+' '+u]}
  const NAMES=['Дано / СІ','Формула','Підстановка','Калькулятор','Запис'];
  const LV=()=>window.LVL||2,AM=m=>LV()===3?'solo':LV()===1?'assist':m.mode,XM=()=>[0,.9,1,1.3][LV()];
  let S=null,idx=0,onAll=null,totals={xp:0,stars:0,done:0};
@@ -70,11 +70,12 @@ const Tasks=(()=>{
   else if(a==='to4'){S.step=4;S.expr='';S.res='';S.msg='';render()}
   else if(a==='key'){key(b.dataset.k)}
   else if(a==='ins'){[...b.dataset.v].forEach(ch=>key(ch))}
-  else if(a==='put'){const v=evalExpr(S.expr);if(isNaN(v)){setMsg('Спочатку склади вираз і натисни «=».','info');return}$('ain').value=fmt(v,m.find.round).replace('.',',');setMsg('Число вставлено — обери одиницю й перевір.','info')}
+  else if(a==='put'){const v=evalExpr(S.expr);if(isNaN(v)){setMsg('Спочатку склади вираз і натисни «=».','info');return}$('ain').value=fmt(v,m.find.round).replace('.',',');setMsg(m.find.si!=null?'Число вставлено — це ще '+m.find.siUnit+'. Переведи у '+m.find.unit+'.':'Число вставлено — обери одиницю й перевір.','info')}
   else if(a==='hint4'){S.hints++;S.h4++;setMsg(S.h4===1?'Формула: '+m.formulas[0].t+'.':S.h4===2?'Підстановка: '+blanks(m.expr)+' — впиши числа з «Дано» (СІ).':'Вираз: '+m.expr,'info')}
   else if(a==='chk4'){const v=parseNum($('ain').value),u=$('aun').value;if(!$('ain').value.trim())return setMsg('Спершу введи відповідь.','info');if(isNaN(v))return err('Введи відповідь числом (кому можна).');if(!u)return err('Обери одиницю вимірювання.');
+   if(m.find.si!=null&&!near(v,m.find.ans)&&near(v,m.find.si)){return err('Це значення в '+m.find.siUnit+'. У задачі питають у '+m.find.unit+' — переведи: '+(m.find.mul>=1?'помнож на ':'поділи на ')+fnum(m.find.mul>=1?m.find.mul:+(1/m.find.mul).toFixed(3))+'.')}
    if(!near(v,m.find.ans))return err(diag(m,v));if(u!==m.find.unit)return err('Число правильне, але одиниця не та. Тут шукаємо '+m.find.name+' — у '+m.find.unit+'.');
-   S.st=S.errs+S.hints===0?3:S.errs+S.hints<=2?2:1;S.gain=Math.round(m.xp*XM()*Math.max(.4,1-.15*S.errs-.1*S.hints));if(!S.completed){S.completed=true;totals.xp+=S.gain;totals.stars+=S.st;totals.done++;notify()}Sfx.ok();S.step=5;render()}
+   S.st=S.errs+S.hints===0?3:S.errs+S.hints<=2?2:1;S.gain=Math.round(m.xp*XM()*Math.max(.4,1-.15*S.errs-.1*S.hints));if(!S.completed){S.completed=true;totals.xp+=S.gain;totals.stars+=S.st;totals.done++;notify()}Sfx.ok();S.step=5;S.msg='';S.cls='';render()}
   else if(a==='fnd'){if(b.dataset.s===m.find.s){S.found=true;S.msg='';S.cls='';Sfx.ok();render()}else setMsg('Ні, «'+b.dataset.s+'» — це дано. Що в задачі питають?','info')}
   else if(a==='qo'){const i=+b.dataset.i,o=m.opts[i];if(o.ok){S.qdone=true;S.msg='';render()}else{S.bad=S.bad||{};S.bad[i]=1;err(o.why||'Не те. Спробуй ще.');render()}}
   else if(a==='fchk'){S.fv=m.rows.map((r,i)=>document.querySelector('[data-fi="'+i+'"]').value);if(S.fv.every(x=>!String(x).trim()))return setMsg('Спершу впиши відповіді.','info');let ok=true;m.rows.forEach((r,i)=>{const inp=document.querySelector('[data-fi="'+i+'"]'),v=parseNum(inp.value);const good=!isNaN(v)&&near(v,r.ans,.001);inp.className=good?'ok':'bad';if(!good)ok=false});if(ok){S.msg='Усе вірно!';S.cls='ok';complete();render()}else err('Є помилки в позначених рядках. '+m.hint)}
