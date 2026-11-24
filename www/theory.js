@@ -48,7 +48,9 @@ const Theory={i:0,z:null,
  open(zid,from){const d=this.data(zid);if(!d)return;this.z=d;this.i=0;this.from=from||'';$('theory').hidden=false;this.render()},
  render(){const d=this.z,c=d.cards[this.i],n=d.cards.length;
   $('thTitle').textContent=d.par+' · '+d.title;
-  $('thBody').innerHTML='<h3>'+c.h+'</h3>'+c.b;
+  $('thBody').innerHTML='<h3>'+c.h+'</h3>'+(c.fig&&FIG[c.fig]?'<div class="thwrap"><div class="thfig">'+FIG[c.fig]+'</div><div class="thtx">'+c.b+'</div></div>':c.b);
+  {const root=$('thBody').querySelector('.thtx')||$('thBody');let k=0;[...root.children].forEach(e=>{e.classList.add('rv');e.style.animationDelay=(.15+k++*.45)+'s'})}
+  $('thBody').scrollTop=0;
   $('thDots').innerHTML=d.cards.map((_,k)=>'<i'+(k===this.i?' class="on"':'')+'></i>').join('');
   $('thPrev').disabled=this.i===0;$('thNext').textContent=this.i===n-1?'Готово ✓':'Далі ▸'},
  next(){if(this.i>=this.z.cards.length-1){this.close();return}this.i++;this.render()},

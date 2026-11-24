@@ -12,7 +12,9 @@ const Tasks=(()=>{
  const LV=()=>window.LVL||2,AM=m=>LV()===3?'solo':LV()===1?'assist':m.mode,XM=()=>[0,.9,1,1.3][LV()];
  let S=null,idx=0,onAll=null,totals={xp:0,stars:0,done:0};
 
- function open(startIdx,cb){idx=startIdx||0;onAll=cb;$('task').hidden=false;document.body.classList.add('intask');begin()}
+ function open(startIdx,cb){idx=Math.min(startIdx||0,LIST.length-1);onAll=cb;$('task').hidden=false;document.body.classList.add('intask');begin()}
+ function progress(){return {i:S&&S.completed?Math.min(idx+1,LIST.length):idx,t:{...totals}}}
+ function resume(p){totals={...p.t};idx=p.i}
  function close(){$('task').hidden=true;document.body.classList.remove('intask')}
  function begin(){const m=LIST[idx];S={m,type:m.type||'calc',completed:false,qdone:false,labStarted:false,ci:0,step:1,errs:0,hints:0,msg:'',cls:'',expr:AM(m)==='assist'?'':'',res:'',sel:null,slots:[],opts:shuffle((m.formulas||[]).map((f,i)=>i),idx+11),okF:false,sub:false,solved:false};
   S.slots=(m.tpl||[]).filter(x=>typeof x==='object').map(()=>null);
@@ -73,6 +75,6 @@ const Tasks=(()=>{
   else if('÷×−+'.includes(k)){S.expr=S.expr.trim()+' '+k+' '}else S.expr+=k;
   $('ce').textContent=S.expr;$('cr').textContent=S.res}
  document.addEventListener('click',e=>{if(!$('task').hidden)click(e)});
- $('tclose').addEventListener('click',()=>{close();onAll&&onAll(null)});
- return {open,close,setList(l){LIST=l},totals:()=>totals,max:()=>LIST.length*3,reset(){totals={xp:0,stars:0,done:0}}};
+ $('tclose').addEventListener('click',()=>{const pr=progress();close();onAll&&onAll(null,pr)});
+ return {open,close,progress,resume,setList(l){LIST=l},totals:()=>totals,max:()=>LIST.length*3,reset(){totals={xp:0,stars:0,done:0}}};
 })();

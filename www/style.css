@@ -223,3 +223,32 @@ summary{cursor:pointer;font-weight:700}
 .labic{font-size:96px;text-align:center;background:rgba(5,10,28,.6);border:1px solid var(--line);border-radius:16px;padding:20px 0}
 #chView{max-height:42vh}#chTabs{max-height:84px;overflow:auto}
 #thList{z-index:44;background:#070b22}#thList .zl{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:10px 0;text-align:left}#thList .zl button{text-align:left;padding:8px 10px;font-size:14px}
+/* завдання: компактна двоколонкова розкладка для низьких екранів (без прокрутки сторінки) */
+@media (max-height:600px) and (min-aspect-ratio:1/1){
+ #task.ov{overflow:hidden}
+ #task .tin{height:100dvh;height:100vh;display:grid;grid-template-columns:34% 1fr;grid-template-rows:auto 1fr;column-gap:12px;padding:0 12px 8px;font-size:14px;width:100%}
+ #task .thead{grid-column:1/3;position:static;margin:0 -12px 8px;padding:6px 12px}
+ #task .tin>.story,#task .tin>#stp{grid-column:1}
+ #task .story{grid-row:2;font-size:14px;padding:8px 10px;margin:0;overflow:auto;max-height:100%}
+ #task #stp{display:none}
+ #task #wb{grid-column:2;grid-row:2;overflow:auto;max-height:100%;font-size:14px;padding:10px 12px}
+ #task .card{font-size:14px}#task input,#task select{font-size:15px;padding:4px 6px}
+ #task .btn{padding:6px 12px;font-size:14px}#task .btn.big{font-size:15px}
+ #task .msg{margin:4px 0;min-height:18px}#task h3{margin:0 0 6px;font-size:16px}
+ #task .g{margin:4px 0}
+}
+/* теорія: поява по абзацах, малюнки, приклади */
+.thcard{max-height:62vh;overflow:auto}
+.thcard .rv{opacity:0;transform:translateY(8px);animation:rvin .55s ease forwards}
+@keyframes rvin{to{opacity:1;transform:none}}
+.thcard p{margin:9px 0}.thcard li{margin:5px 0}
+.thwrap{display:grid;grid-template-columns:minmax(150px,38%) 1fr;gap:14px;align-items:center}
+.thfig .fig{width:100%;height:auto;background:rgba(255,255,255,.04);border-radius:12px}
+.fig .d{stroke-dasharray:1;stroke-dashoffset:1;animation:drw 1s ease forwards;animation-delay:var(--t,0s)}
+.fig .f{opacity:0;animation:fin .5s ease forwards;animation-delay:var(--t,0s)}
+@keyframes drw{to{stroke-dashoffset:0}}@keyframes fin{to{opacity:1}}
+.thcard .ex{background:rgba(110,231,168,.1);border-left:4px solid #6ee7a8;border-radius:8px;padding:8px 12px}
+.thcard .tip{background:rgba(255,209,102,.1);border-left:4px solid #ffd166;border-radius:8px;padding:8px 12px}
+.thcard .bad{background:rgba(255,90,120,.1);border-left:4px solid #ff5a78;border-radius:8px;padding:8px 12px}
+@media (max-width:560px){.thwrap{grid-template-columns:1fr}}
+@media (max-height:520px){#theory .logo.sm{font-size:22px;margin:0 0 2px}#theory .thz{margin:0 0 4px;font-size:13px}.thcard{max-height:52vh;padding:8px 14px;font-size:14px}.thcard .fm{font-size:19px;margin:5px 0}.thcard p{margin:6px 0}#theory .thdots{margin:5px 0}}
