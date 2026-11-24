@@ -1,0 +1,7 @@
+{
+  "appId": "net.fizykon.app",
+  "appName": "Фізикон",
+  "webDir": "www",
+  "backgroundColor": "#0b0b2e",
+  "android": { "allowMixedContent": false }
+}

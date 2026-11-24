@@ -1,0 +1,80 @@
+/* rubik-cyrillic-400-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/rubik-cyrillic-400-normal.woff2) format('woff2');
+}
+/* rubik-latin-400-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/rubik-latin-400-normal.woff2) format('woff2');
+}
+/* rubik-cyrillic-500-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(fonts/rubik-cyrillic-500-normal.woff2) format('woff2');
+}
+/* rubik-latin-500-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(fonts/rubik-latin-500-normal.woff2) format('woff2');
+}
+/* rubik-cyrillic-700-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/rubik-cyrillic-700-normal.woff2) format('woff2');
+}
+/* rubik-latin-700-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/rubik-latin-700-normal.woff2) format('woff2');
+}
+/* rubik-cyrillic-800-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url(fonts/rubik-cyrillic-800-normal.woff2) format('woff2');
+}
+/* rubik-latin-800-normal */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url(fonts/rubik-latin-800-normal.woff2) format('woff2');
+}
+/* russo-one-cyrillic-400-normal */
+@font-face {
+  font-family: 'Russo One';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/russo-one-cyrillic-400-normal.woff2) format('woff2');
+}
+/* russo-one-latin-400-normal */
+@font-face {
+  font-family: 'Russo One';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/russo-one-latin-400-normal.woff2) format('woff2');
+}
