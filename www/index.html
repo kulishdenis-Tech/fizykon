@@ -45,10 +45,10 @@
    <label class="sr"><span>Гучність музики</span><input type="range" id="sMusic" min="0" max="1" step="0.05"><b id="sMusicV"></b></label>
    <label class="sr"><span>Гучність звуків</span><input type="range" id="sSfx" min="0" max="1" step="0.05"><b id="sSfxV"></b></label>
   </div>
-  <div class="srows"><div class="sr"><span id="sWho">Рівень задач</span><span id="sLvl" class="seg"><button class="btn ghost" data-l="1">Новачок</button><button class="btn ghost" data-l="2">Середній</button><button class="btn ghost" data-l="3">Профі</button></span></div>
+  <div class="srows"><div class="sr"><span>Рівень задач</span><span id="sLvl" class="seg"><button class="btn ghost" data-l="1">Новачок</button><button class="btn ghost" data-l="2">Середній</button><button class="btn ghost" data-l="3">Профі</button></span></div>
    <label class="sr"><span>Відкрити всі зони</span><input type="checkbox" id="sOpenAll"></label></div>
-   <p class="note2" id="sBest"></p>
-   <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button><button class="btn ghost" id="sDel">🗑 Видалити профіль</button></div>
+   <p class="note2" id="sWho"></p><p class="note2" id="sBest"></p>
+   <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button><button class="btn ghost" id="sRen">✎ Змінити імʼя</button><button class="btn ghost" id="sDel">🗑 Видалити профіль</button></div>
   <div class="sabout"><p><b>Фізикон</b> — фізика 7 клас («Ранок», 2024) і математика 5 клас. Зроблено з любов’ю батьком для своїх дітей.</p>
   <p class="note2">Версія: <b id="verTxt"></b></p></div>
   <button class="btn" id="sClose">Закрити</button></div></div>
@@ -58,7 +58,7 @@
 <div id="title" class="ov">
   <div class="tbox">
     <div class="logo">ФІЗИКОН</div>
-    <div class="tag">Макс і Ядро законів</div>
+    <div class="tag">Ядро законів</div>
     <div class="zname">Шкільні предмети грою <small>(за підручниками НУШ)</small></div>
     <button class="btn big pulse" id="bPlay">ГРАТИ</button>
     <button class="btn ghost" id="bAbout" style="margin-top:10px">⚙ Налаштування</button>
@@ -74,8 +74,8 @@
 <div id="rank" class="ov" hidden><div class="tbox"><div class="logo sm">🏆 РЕЙТИНГ</div>
   <div id="rJoin">
    <p class="note2" style="margin-top:0">Змагайся з друзями! Твій <b>нік</b>, результат (XP і зірки) бачитимуть інші гравці. Нічого особистого не передається: ні імені, ні віку, ні телефону.</p>
-   <label>Нік (ім’я або прізвисько)<input id="rNick" maxlength="16" autocomplete="off" placeholder="Наприклад: Макс"></label>
-   <label>Код класу (необов’язково)<input id="rRoom" maxlength="12" autocomplete="off" placeholder="Домовтеся з друзями, напр. 7Б"></label>
+   <label>Нік (ім’я або прізвисько)<input id="rNick" maxlength="16" autocomplete="off" placeholder="Придумай нік (не справжнє імʼя)"></label>
+   <label>Код класу (обовʼязково, від 3 символів)<input id="rRoom" maxlength="12" autocomplete="off" placeholder="Домовтеся з друзями, напр. 7Б"></label>
    <p class="note2">З кодом класу ви побачите таблицю лише своєї групи. Без коду — тільки загальну.</p>
    <div class="row"><button class="btn big" id="rGo">Приєднатись</button><button class="btn ghost" id="rCancel" hidden>Скасувати</button><button class="btn ghost" id="rBack2">← На карту</button></div>
    <button class="btn ghost" id="rLeave" hidden style="margin-top:8px">Вийти з рейтингу</button>
@@ -132,6 +132,7 @@
 <script src="theory.js"></script>
 <script src="theory3.js"></script>
 <script src="theoryM.js"></script>
+<script src="theoryM2.js"></script>
 <script src="theoryX.js"></script>
 <script src="extras.js"></script>
 <script src="cheat.js"></script>

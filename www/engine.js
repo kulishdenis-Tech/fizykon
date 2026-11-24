@@ -1,4 +1,4 @@
-const GAME_VER='3.2 (реалістичні одиниці у відповідях: год, км, км/год, кПа, кН)';
+const GAME_VER="3.3";
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;

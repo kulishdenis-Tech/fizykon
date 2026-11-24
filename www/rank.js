@@ -3,7 +3,8 @@
 const Rank=(()=>{
  const tot=()=>{let xp=0,st=0;for(const k in P){xp+=(P[k].xp||0);st+=(P[k].stars||0)}return{xp,st}};
  let tab='room',editing=false;
- const firstWord=n=>String(n||'').trim().split(' ')[0].slice(0,16);
+ const ADJ=['Швидкий','Сміливий','Хитрий','Мудрий','Веселий','Зоряний','Тихий','Кмітливий','Спритний','Відважний'],ANI=['Лис','Дельфін','Сокіл','Їжак','Бобер','Тигр','Яструб','Ведмідь','Кіт','Пінгвін'];
+ const genNick=()=>(ADJ[Math.random()*ADJ.length|0]+ANI[Math.random()*ANI.length|0]+(10+Math.random()*90|0)).slice(0,16);
  const msg=t=>{$('rMsg').textContent=t||''};
  const errText=e=>e&&e.code===403?'Забагато оновлень поспіль — спробуй за кілька секунд.':(e&&e.message==='Failed to fetch'||!navigator.onLine)?'Немає інтернету. Рейтинг оновиться, коли він з’явиться.':'Не вдалося зв’язатися з сервером. Спробуй пізніше.';
  function open(){Sfx.click();$('map').hidden=true;$('rank').hidden=false;editing=false;render()}
@@ -12,10 +13,10 @@ const Rank=(()=>{
   const o=CUR.online,joined=o&&o.on&&!editing;
   $('rJoin').hidden=!!joined;$('rBoard').hidden=!joined;msg('');
   if(!joined){
-   $('rNick').value=(o&&o.nick)||firstWord(CUR.name);$('rRoom').value=(o&&o.room)||'';
+   $('rNick').value=(o&&o.nick)||genNick();$('rRoom').value=(o&&o.room)||'';
    $('rLeave').hidden=!(o&&o.on);$('rCancel').hidden=!(o&&o.on);return}
   $('rWho').textContent=COURSE().subj+', '+COURSE().grade+' кл. · '+o.nick+(o.room?' · клас '+o.room:'');
-  $('rTabRoom').hidden=!o.room;if(!o.room)tab='all';
+  $('rTabRoom').hidden=false;$('rTabAll').hidden=true;tab='room';
   $('rTabRoom').classList.toggle('sel',tab==='room');$('rTabAll').classList.toggle('sel',tab==='all');
   load()}
  async function load(){
@@ -32,6 +33,7 @@ const Rank=(()=>{
  async function join(){
   const nick=Online.clean($('rNick').value).slice(0,16),room=Online.normRoom($('rRoom').value);
   if(nick.length<2){msg('Нік має бути від 2 літер.');return}
+  if(room.length<3){msg('Введи код класу (від 3 символів): рейтинг показує лише твій клас.');return}
   const prev=CUR.online;CUR.online={on:true,nick,room};
   $('rGo').disabled=true;msg('Підключаємось…');
   try{const t=tot();await Online.push(CUR,t.xp,t.st,CID);saveDB();editing=false;Sfx.ok();render()}
