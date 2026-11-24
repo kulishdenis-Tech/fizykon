@@ -1,4 +1,4 @@
-const GAME_VER='2.7 (дроби, бестіарій, сюжетні підказки)';
+const GAME_VER='2.8 (фінальний бос курсу)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
