@@ -43,10 +43,10 @@ function drawGen(c,b,bt,rev,a,T,G){const B=(Z.bd&&Z.bd[b])||{};
   rows.forEach((r,i)=>{let val;try{val=new Function('v','return '+r[1])(v)}catch(e){val=''}const s=typeof val==='number'?fmt(val,Math.abs(val)<10&&val%1?2:val%1?1:0):String(val);txt(c,r[0]+': '+s+' '+r[2],HX,PY+262+i*36,22,['#ffd166','#6ee7a8','#ff9ec2'][i%3],'center')});return}
  if(B.lines)lines(c,B.lines,bt,PY+(B.scene?260:130),B.scene?46:70,22)}
 /* фабрика зон */
-function mk(s){const first={who:'giro',txt:s.first,sp:s.first,beat:'',title:''};
+function mk(s){const first={who:'giro',txt:s.d_first||s.first,sp:s.first,beat:'',title:''};
  const bd={};s.beats.forEach(b=>bd[b.k]=b);const lb=s.beats[s.beats.length-1];
- const steps=[first].concat(s.beats.map(b=>({who:'giro',beat:b.k,title:b.title,min:b.min||6,txt:b.txt,sp:b.txt})),
-  [{who:'max',beat:lb.k,title:lb.title,txt:s.maxsay,sp:s.maxsay,keep:true},{who:'giro',beat:'play',title:'ТВІЙ ПУЛЬТ',play:true,txt:s.playTxt,sp:s.playTxt}]);
+ const steps=[first].concat(s.beats.map(b=>({who:'giro',beat:b.k,title:b.title,min:b.min||6,txt:b.dsp||b.txt,sp:b.txt})),
+  [{who:'max',beat:lb.k,title:lb.title,txt:s.d_maxsay||s.maxsay,sp:s.maxsay,keep:true},{who:'giro',beat:'play',title:'ТВІЙ ПУЛЬТ',play:true,txt:s.d_playTxt||s.playTxt,sp:s.playTxt}]);
  const P=s.play;
  return {id:s.id,ord:s.ord,par:s.par,name:s.name,color:s.color,gem:s.gem,theme:s.theme,tint:s.tint,gravity:s.gravity,jump:s.jump,blurb:s.blurb,landmark:LM3(s.lm[0],s.lm[1],s.color),
   intro:intro3(s.intro[0],s.intro[1],s.intro[2]),play:{min:P.min,max:P.max,step:P.step,val:P.val,label:P.label,unit:P.unit,rows:P.rows,scene:P.scene,fmt:v=>fmt(v,v%1?1:0)+' '+P.unit,vis:v=>2+4*(v-P.min)/Math.max(1,P.max-P.min)},

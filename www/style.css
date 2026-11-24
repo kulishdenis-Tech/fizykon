@@ -252,3 +252,12 @@ summary{cursor:pointer;font-weight:700}
 .thcard .bad{background:rgba(255,90,120,.1);border-left:4px solid #ff5a78;border-radius:8px;padding:8px 12px}
 @media (max-width:560px){.thwrap{grid-template-columns:1fr}}
 @media (max-height:520px){#theory .logo.sm{font-size:22px;margin:0 0 2px}#theory .thz{margin:0 0 4px;font-size:13px}.thcard{max-height:52vh;padding:8px 14px;font-size:14px}.thcard .fm{font-size:19px;margin:5px 0}.thcard p{margin:6px 0}#theory .thdots{margin:5px 0}}
+/* тап-зони ≥ 48 px (Play / Families, пальці) */
+.hudr{gap:8px}
+#hud .btn-i,.hudr .btn-i{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center;padding:6px}
+#hud .btn-i svg,.hudr .btn-i svg{width:22px!important;height:22px!important}
+.thb{min-height:48px;display:inline-flex;align-items:center;padding:6px 12px}
+#task .btn,#task .btn.ghost,#task .btn.big{min-height:48px}
+#task input,#task select{min-height:48px;box-sizing:border-box}
+@media (max-height:600px) and (min-aspect-ratio:1/1){#task .btn{padding:6px 14px}#task input,#task select{padding:6px 8px;min-height:48px}}
+.btn{min-height:48px}

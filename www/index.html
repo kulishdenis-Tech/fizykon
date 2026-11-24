@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Фізикон 2.0: фізика 7 клас (зони §12–13)</title>
+<title>Фізикон — фізика 7 клас і математика 5 клас</title>
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -34,8 +34,6 @@
   <div id="pList"></div><button class="btn ghost" id="pNew" hidden>＋ Новий гравець</button>
   <div id="pForm">
    <label>Ім’я<input id="pName" maxlength="20" autocomplete="off" placeholder="Як тебе звати?"></label>
-   <label>Вік<input id="pAge" type="number" inputmode="numeric" min="5" max="99" placeholder="12"></label>
-   <div class="plbl">Ти</div><div class="seg"><button class="btn ghost" data-sex="m">Хлопець</button><button class="btn ghost" data-sex="f">Дівчина</button></div>
    <div class="plbl">Наскільки впевнено знаєш предмет?</div><div class="seg"><button class="btn ghost" data-lvl="1">1 · Поки слабо</button><button class="btn ghost" data-lvl="2">2 · Середньо</button><button class="btn ghost" data-lvl="3">3 · Добре</button></div>
    <p class="note2">Від цього залежить складність: новачкам — підказки й готові вирази, «профі» — задачі без підказок і більше XP.</p>
    <button class="btn big" id="pGo">Почати</button></div>
@@ -48,7 +46,7 @@
    <label class="sr"><span>Гучність звуків</span><input type="range" id="sSfx" min="0" max="1" step="0.05"><b id="sSfxV"></b></label>
   </div>
   <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button></div>
-  <div class="sabout"><p><b>Фізикон</b> — навчальна гра за шкільними підручниками. Зараз: фізика 7 клас («Ранок»), увесь підручник. Математика 5 клас — скоро. Зроблено для Макса.</p>
+  <div class="sabout"><p><b>Фізикон</b> — фізика 7 клас («Ранок», 2024) і математика 5 клас. Зроблено з любов’ю батьком для своїх дітей.</p>
   <p class="note2">Версія: <b id="verTxt"></b></p></div>
   <button class="btn" id="sClose">Закрити</button></div></div>
 <div id="rot">↻ Поверни телефон горизонтально — гра на весь екран, набагато зручніше</div>
@@ -111,7 +109,7 @@
     <div class="tag" id="endTag"></div>
     <p class="note2" id="endStat"></p>
     <div class="row"><button class="btn" id="bNext">Наступна зона ▸</button><button class="btn ghost" id="bMap2">На карту</button><button class="btn ghost" id="bCartoon">Мультик ще раз</button></div>
-    <p class="note2">Готово: усі зони підручника й бос «Ядро Глітча».</p>
+    <p class="note2" id="endNext"></p>
   </div>
 </div>
 
