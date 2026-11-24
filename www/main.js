@@ -18,6 +18,7 @@ const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:
 window.G=G;
 const SPARKS=[];for(let i=0;i<16;i++){const x=520+i*150+(i%3)*30;SPARKS.push({x,y:FEET-70-(i%4===1?95:i%4===3?40:0)})}
 const BLOCKS=[780,1330,1880,2300];
+const LASTSPARK=Math.max(...SPARKS.map(s=>s.x));
 
 const sparkHud=()=>{$('sparkN').textContent=G.sparks};
 const pop=(x,y,t,c)=>{G.pops.push({x,y,t,c,l:1.3})};
@@ -63,11 +64,11 @@ function showMap(){Music.play('park');RUN++;skipRes&&skipRes('abort');Voice.stop
 async function startZone(id){Z=ZONES.find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+Z.id+'</b><span>'+Z.par+' · '+Z.name+'</span>';
  Object.assign(G,{mode:'intro',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:false,Tmin:99,Tmax:0,unlocked:false,cutDone:false,T:10,Ttarget:10,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
- $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок, щоб відкрити задачі';
+ $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';
  $('plabel').innerHTML=Z.play.label?Z.play.label.replace(/^(\S+)\s(.+)$/,'$1 <b>$2</b>'):'Період <b>T</b>';const sl=$('tslider');sl.min=Z.play.min;sl.max=Z.play.max;sl.step=Z.play.step;sl.value=Z.play.val;$('tval').textContent=Z.play.fmt(Z.play.val);
  Tasks.setList(Z.tasks.map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
  for(const l of Z.intro){await say(l[0],l[1],l[2]);if(tok!==RUN)return}
- $('sub').hidden=true;G.mode='run';$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй червоні блоки';
+ $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй червоні блоки';
 }
 async function runSteps(i,tok){const STEPS=Z.steps;
  while(i<STEPS.length){const s=STEPS[i];
@@ -101,7 +102,7 @@ bindProfiles();$('bPlay').addEventListener('click',startGame);$('verTxt').textCo
 $('mapList').addEventListener('click',e=>{const b=e.target.closest('.zc');if(b&&!b.disabled){Sfx.click();startZone(+b.dataset.z)}});
 $('bMap').addEventListener('click',()=>{Sfx.click();showMap()});$('bMap2').addEventListener('click',()=>{Sfx.click();showMap()});
 $('bNext').addEventListener('click',()=>{Sfx.click();startZone(Z.id+1)});
-$('bCartoon').addEventListener('click',()=>{$('endcard').hidden=true;Tasks.reset();G.unlocked=false;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок, щоб відкрити задачі';G.arrived=true;G.Ttarget=4;runSteps(1,++RUN)});
+$('bCartoon').addEventListener('click',()=>{$('endcard').hidden=true;Tasks.reset();G.unlocked=false;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';G.arrived=true;G.Ttarget=4;runSteps(1,++RUN)});
 
 /* ---------- input ---------- */
 const K={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r'};
@@ -134,7 +135,7 @@ function update(dt){
     if(G.hits===1)tip('⚠ Червоні глітч-блоки крадуть іскри. Перестрибуй їх: пробіл або ▲',4200);
     for(let k=0;k<10;k++)G.fx.push({x:bx,y:FEET-40,vx:(Math.random()-.5)*400,vy:-Math.random()*300,l:.5})}});
   G.camT=clamp(G.px-420,0,CAMCUT);
-  if(G.px>CX-700&&G.mode==='run'){cutscene()}
+  if(G.px>LASTSPARK+90&&G.mode==='run'){cutscene()}
  }
  if(G.mode==='auto'){G.vx=250;G.face=1;G.px+=G.vx*dt;G.ph+=dt*8;stepT+=dt;if(stepT>.26){stepT=0;Sfx.step()}if(G.px>=STOPX){G.px=STOPX;G.vx=0;G.arrived=true;G.face=-1}if(G.arrived){G.vx=0}}
  else if(G.mode!=='run'){G.vx=0}
