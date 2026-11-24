@@ -186,11 +186,11 @@ function draw(){
  // max
  const mx=G.px-cam,run=Math.min(1,Math.abs(G.vx)/200);
  Art.shadow(c,mx,34*(1+G.y/700));
- if(!(G.hurt>0&&Math.floor(G.hurt*14)%2)&&G.mode!=='title')Art.max(c,mx,FEET+G.y,{ph:G.ph,face:G.face,air:G.y<-4,run,t,s:1});
+ if(!(G.hurt>0&&Math.floor(G.hurt*14)%2)&&G.mode!=='title')(Z.theme==='block'?Art.maxB:Art.max).call(Art,c,mx,FEET+G.y,{ph:G.ph,face:G.face,air:G.y<-4,run,t,s:1});
  else if(G.mode==='title'){}
  // title-mode idle preview
  Art.flyDraw(c,cam,t);
- Art.giro(c,G.giroX,G.giroY,t,{mood:G.giroMood,tilt:Math.sin(t*1.5)*.06});
+ (Z.theme==='block'?Art.giroB:Art.giro).call(Art,c,G.giroX,G.giroY,t,{mood:G.giroMood,tilt:Math.sin(t*1.5)*.06});
  G.fx.forEach(f=>{c.globalAlpha=clamp(f.l*2,0,1);c.fillStyle='#7df9ff';c.beginPath();c.arc(f.x-cam,f.y,4,0,TAU);c.fill()});c.globalAlpha=1;
  G.pops.forEach(p=>{c.globalAlpha=clamp(p.l*1.6,0,1);txt(c,p.t,p.x-cam,p.y,26,p.c,'center');c.globalAlpha=1});
  holo(c);
