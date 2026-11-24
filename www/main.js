@@ -23,6 +23,8 @@ function enterApp(pl){setPlayer(pl);$('prof').hidden=true;Sfx.click();pl.course?
 function showCourses(){Voice.stop();$('map').hidden=true;$('course').hidden=false;
  $('cList').innerHTML=COURSES.map(c=>'<button class="zc'+(c.ready?'':' lock')+'" data-c="'+c.id+'" style="--c:'+c.color+'"'+(c.ready?'':' disabled')+'><span class="zn">'+c.grade+' КЛАС</span><b>'+c.icon+' '+c.subj+'</b><small>'+c.book+'</small><em>'+(c.ready?(c.id===CID&&CUR.course?'✓ обрано':'грати ▸'):'скоро')+'</em></button>').join('')}
 const saveP=()=>saveDB();
+window.onTaskProgress=pr=>{try{const o=P[Z.id]||(P[Z.id]={xp:0,stars:0});o.part=pr;saveP()}catch(e){}};
+addEventListener('pagehide',()=>{try{saveDB()}catch(e){}});document.addEventListener('visibilitychange',()=>{if(document.hidden){try{saveDB()}catch(e){}}});
 const FAST=/[?&]fast/.test(location.search);
 const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},pops:[],hits:0,shake:0,hurt:0,spin:0,T:10,Ttarget:10,val:4,
  holoK:0,holoTitle:'',beat:'',beatT0:0,spin0:0,arrived:false,Tmin:99,Tmax:0,xp:0,stars:0,unlocked:false,cutDone:false,giroX:300,giroY:380,giroMood:0,fx:[],pops:[],shake:0,hits:0};
