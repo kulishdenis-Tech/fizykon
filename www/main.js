@@ -99,7 +99,11 @@ async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTh
  $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';
  $('plabel').innerHTML=Z.play.label?Z.play.label.replace(/^(\S+)\s(.+)$/,'$1 <b>$2</b>'):'Період <b>T</b>';const sl=$('tslider');sl.min=Z.play.min;sl.max=Z.play.max;sl.step=Z.play.step;sl.value=Z.play.val;$('tval').textContent=Z.play.fmt(Z.play.val);
  Tasks.setList(ZT(Z).map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
- for(const l of Z.intro){await say(l[0],l[1],l[2]);if(tok!==RUN)return}
+ {const GR='Привіт, {n}!',others=ZL().some(z=>z!==Z&&P[z.id]&&(P[z.id].max||P[z.id].part)),gz=ZL().find(z=>z.intro&&z.intro[0]&&z.intro[0][1].startsWith(GR));
+  let L=Z.intro.slice();
+  if(gz===Z&&others)L=L.slice(1);                       // знайомство з Гіро лише в першій зоні, яку граєш
+  else if(gz&&gz!==Z&&!others)L=[gz.intro[0]].concat(L);
+  for(const l of L){await say(l[0],l[1],l[2]);if(tok!==RUN)return}}
  $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй блоки · наступай на глітчів згори';tip(STORY[(ZL().findIndex(q=>q.id===Z.id))%STORY.length],5600);
 }
 function zoneLocked(zi){if(CUR.openAll||zi===0)return false;const pq=P[ZL()[zi-1].id];return !(pq&&pq.max&&pq.stars>=1)}
@@ -176,8 +180,8 @@ function update(dt){
   // глітч-блоки: вкрадають до 3 іскор (вони повертаються на місце — збери знову)
   BLOCKS.forEach(bx=>{if(G.hurt<=0&&Math.abs(bx-G.px)<42&&G.y>-62){G.hurt=1;G.px-=110;G.vx=-200;G.giroMood=0;Sfx.hit();G.shake=.35;
     let lost=0;for(let i=SPARKS.length-1;i>=0&&lost<3;i--){if(G.got[i]){G.got[i]=0;lost++}}G.sparks-=lost;sparkHud();
-    pop(bx,FEET-90,lost?'−'+lost+' ✦ Глітч вкрав іскри!':'Глітч-блок! Стрибай ▲','#ff4d8d');G.hits=(G.hits||0)+1;
-    if(G.hits===1)tip('⚠ Червоні глітч-блоки крадуть іскри. Перестрибуй їх: пробіл або ▲',4200);
+    pop(bx,FEET-150,lost?'−'+lost+' ✦ іскри вкрадено':'Глітч-блок! Стрибай ▲','#ff4d8d');G.hits=(G.hits||0)+1;
+    if(G.hits===1)tip('⚠ Фіолетові блоки крадуть іскри, червоні глітчі шкодять. Перестрибуй: пробіл або ▲',4200);
     for(let k=0;k<10;k++)G.fx.push({x:bx,y:FEET-40,vx:(Math.random()-.5)*400,vy:-Math.random()*300,l:.5})}});
   updEnemies(dt);
   G.camT=clamp(G.px-420,0,CAMCUT);

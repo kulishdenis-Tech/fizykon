@@ -299,3 +299,4 @@ summary{cursor:pointer;font-weight:700}
 .sr .seg .btn{min-height:48px}
 .mapbtns .btn{min-height:48px}@media (max-height:600px) and (min-aspect-ratio:1/1){.mapbtns{gap:4px;flex-wrap:nowrap}.mapbtns .btn{padding:2px 5px;font-size:12px;min-height:48px;white-space:nowrap}}
 @media (max-height:520px){#task .btn[data-a=fchk],#task .btn[data-a=cchk]{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}}
+#hud{left:max(1.6cqw,env(safe-area-inset-left));right:max(1.6cqw,env(safe-area-inset-right));top:max(1.4cqw,env(safe-area-inset-top))}
