@@ -153,6 +153,7 @@ summary{cursor:pointer;font-weight:700}
 #pForm label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:14px;color:var(--mute)}
 #pForm input{font:inherit;font-size:18px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:#fff}
 #pForm .plbl{font-weight:700;font-size:14px;color:var(--mute)}
+.seg{display:flex;gap:6px}.seg .btn.on{background:#4cf;color:#012}
 #pForm .seg{display:flex;gap:8px;flex-wrap:wrap}#pForm .seg .btn{flex:1;min-width:110px;padding:10px 8px}
 #pForm .btn.sel{background:linear-gradient(180deg,#7df9ff,#38bdf8);color:#05122b;border-color:transparent}
 #pErr{min-height:1.2em}
@@ -261,3 +262,19 @@ summary{cursor:pointer;font-weight:700}
 #task input,#task select{min-height:48px;box-sizing:border-box}
 @media (max-height:600px) and (min-aspect-ratio:1/1){#task .btn{padding:6px 14px}#task input,#task select{padding:6px 8px;min-height:48px}}
 .btn{min-height:48px}
+
+.seg{display:flex;gap:6px}.seg .btn{padding:6px 10px;min-height:40px}.seg .btn.on{background:var(--zc,#4cf);color:#012;border-color:transparent}
+.zc.lock{opacity:.55}
+
+.mapbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+@media (max-height:600px) and (min-aspect-ratio:1/1){
+ .mapbox{width:100%;padding:0 10px}.mapbox .logo.sm{font-size:26px;margin:0}
+ #mapList{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;margin:8px 0 4px;padding:4px 6px 8px;-webkit-overflow-scrolling:touch}
+ #mapList .zc{flex:0 0 230px;scroll-snap-align:start;min-height:0;padding:10px}
+ #mapList .zc small{display:block;max-height:3.6em;overflow:hidden}
+ .mapbtns .btn{padding:6px 10px;min-height:44px;font-size:14px}
+ #mapStat{margin:2px 0}
+}
+@media (max-height:600px) and (min-aspect-ratio:1/1){#mapList .zc .thb{display:inline-block;margin:2px 4px 2px 0;padding:6px 8px;font-size:13px}#mapList .zc em{display:block;margin-top:4px}}
+@media (max-height:600px) and (min-aspect-ratio:1/1){.mapbox{min-width:0;max-width:100vw;box-sizing:border-box}#mapList{max-width:100%}}
+@media (max-height:600px) and (min-aspect-ratio:1/1){.mapbtns{gap:5px}.mapbtns .btn{padding:4px 7px;min-height:40px;font-size:12.5px}#mapList{padding-bottom:4px}}

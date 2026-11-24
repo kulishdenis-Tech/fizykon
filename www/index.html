@@ -45,7 +45,9 @@
    <label class="sr"><span>Гучність музики</span><input type="range" id="sMusic" min="0" max="1" step="0.05"><b id="sMusicV"></b></label>
    <label class="sr"><span>Гучність звуків</span><input type="range" id="sSfx" min="0" max="1" step="0.05"><b id="sSfxV"></b></label>
   </div>
-  <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button></div>
+  <div class="srows"><div class="sr"><span id="sWho">Рівень задач</span><span id="sLvl" class="seg"><button class="btn ghost" data-l="1">Новачок</button><button class="btn ghost" data-l="2">Середній</button><button class="btn ghost" data-l="3">Профі</button></span></div>
+   <label class="sr"><span>Відкрити всі зони</span><input type="checkbox" id="sOpenAll"></label></div>
+   <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button><button class="btn ghost" id="sDel">🗑 Видалити профіль</button></div>
   <div class="sabout"><p><b>Фізикон</b> — фізика 7 клас («Ранок», 2024) і математика 5 клас. Зроблено з любов’ю батьком для своїх дітей.</p>
   <p class="note2">Версія: <b id="verTxt"></b></p></div>
   <button class="btn" id="sClose">Закрити</button></div></div>
@@ -64,7 +66,7 @@
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bThAll">📖 Уся теорія</button> <button class="btn ghost" id="bCheat">📝 Шпаргалки</button> <button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><div class="mapbtns"><button class="btn ghost" id="bThAll">📖 Уся теорія</button> <button class="btn ghost" id="bCheat">📝 Шпаргалки</button> <button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div></div>
 </div>
 
 <div id="course" class="ov" hidden><div class="mapbox"><div class="logo sm">КЛАС І ПРЕДМЕТ</div><div id="cList"></div><p class="note2">Прогрес і рейтинг ведуться окремо для кожного предмета.</p></div></div>
