@@ -29,6 +29,13 @@ jobs:
       - name: Fixed signing key and versionCode
         run: |
           mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
+          python3 - <<'PY'
+          import re,os
+          p='android/app/build.gradle';s=open(p).read()
+          ks=os.path.abspath('keystore/debug.keystore')
+          blk="android {\n    signingConfigs {\n        debug {\n            storeFile file('"+ks+"')\n            storePassword 'android'\n            keyAlias 'androiddebugkey'\n            keyPassword 'android'\n        }\n    }\n"
+          s=s.replace("android {\n",blk,1);open(p,'w').write(s)
+          PY
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
           sed -i "s/versionName \"1.0\"/versionName \"1.${{ github.run_number }}\"/" android/app/build.gradle
       - name: Sync web files
@@ -36,6 +43,10 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
+      - name: Verify signing certificate
+        run: |
+          keytool -printcert -jarfile android/app/build/outputs/apk/debug/app-debug.apk | tee cert.txt
+          grep -q "Fizykon Debug" cert.txt
       - uses: actions/upload-artifact@v4
         with:
           name: fizykon-apk
