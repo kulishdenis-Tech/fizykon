@@ -191,3 +191,14 @@ summary{cursor:pointer;font-weight:700}
 #play .btn.big:active{transform:translateY(.25cqw)}
 @media (max-aspect-ratio:1/1){#play .btn.big{font-size:3cqw;padding:1.4cqw}}
 #about{background:#070b22}
+#settings{z-index:40;background:#070b22}
+#settings .tbox{max-width:600px;width:100%;text-align:center}
+.srows{display:grid;gap:10px;margin:6px 0 12px;text-align:left}
+.sr{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-weight:700;font-size:15px}
+.sr input[type=range]{width:100%}.sr b{text-align:right;color:var(--cy)}
+#settings .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+.sabout{margin:8px 0 10px;text-align:left}.sabout p{margin:4px 0;font-size:14px}
+@media (max-height:520px){.sr{font-size:13px;gap:6px}.srows{gap:6px}.sabout p{font-size:12px}#settings .tbox{max-width:760px}}
+#course{z-index:40;background:#070b22}
+#cList{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:10px 0}
+#course .logo.sm{margin-bottom:4px}

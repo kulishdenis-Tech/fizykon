@@ -1,4 +1,4 @@
-const GAME_VER='1.12 (виправлення: іскри, швидкість каруселі, «Про гру»)';
+const GAME_VER='1.13 (вибір класу і предмета, налаштування)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
@@ -12,8 +12,16 @@ function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);
 function lg(c,x0,y0,x1,y1,stops){const g=c.createLinearGradient(x0,y0,x1,y1);stops.forEach((s,i)=>g.addColorStop(s[0],s[1]));return g}
 
 /* ---------- audio ---------- */
+/* ---------- налаштування (на пристрої) ---------- */
+const Settings={v:{rate:1,voice:1,music:.5,sfx:1},
+ load(){try{const j=JSON.parse(localStorage.getItem('fzs'));if(j)Object.assign(this.v,j)}catch(x){}},
+ save(){try{localStorage.setItem('fzs',JSON.stringify(this.v))}catch(x){}},
+ apply(){const v=this.v;if(typeof Music!=='undefined'){Music.vol=.4*v.music;if(Music.started)Music.apply()}
+  if(typeof Sfx!=='undefined'&&Sfx.master)Sfx.master.gain.value=.9*v.sfx;
+  if(typeof Voice!=='undefined'&&Voice.au){Voice.au.volume=v.voice;Voice.au.playbackRate=v.rate}}};
+Settings.load();
 const Sfx={ctx:null,master:null,musicOn:true,sfxOn:true,timer:null,n:0,
- init(){ if(this.ctx)return; try{const A=window.AudioContext||window.webkitAudioContext;this.ctx=new A();this.master=this.ctx.createGain();this.master.gain.value=.9;this.master.connect(this.ctx.destination)}catch(e){this.ctx=null} if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
+ init(){ if(this.ctx)return; try{const A=window.AudioContext||window.webkitAudioContext;this.ctx=new A();this.master=this.ctx.createGain();this.master.gain.value=.9*Settings.v.sfx;this.master.connect(this.ctx.destination)}catch(e){this.ctx=null} if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
  tone(f,d=.15,type='sine',v=.12,slide=0,delay=0){ if(!this.ctx||!this.sfxOn)return; const c=this.ctx,t=c.currentTime+delay,o=c.createOscillator(),g=c.createGain(); o.type=type;o.frequency.setValueAtTime(f,t); if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),t+d); g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g);g.connect(this.master);o.start(t);o.stop(t+d+.02)},
  coin(){this.tone(880,.09,'square',.07);this.tone(1320,.16,'square',.07,0,.07)},
  jump(){this.tone(320,.2,'triangle',.14,420)},
@@ -41,9 +49,9 @@ document.addEventListener('visibilitychange',()=>{const a=Music.el[Music.cur];if
 /* озвучка: записані mp3 (audio/<hash>.mp3), запасний варіант — голос пристрою */
 const Voice={on:true,voice:null,au:null,
  init(){ if(!('speechSynthesis' in window))return; const pick=()=>{const vs=speechSynthesis.getVoices();this.voice=vs.find(v=>/^uk/i.test(v.lang))||null}; pick(); try{speechSynthesis.onvoiceschanged=pick}catch(e){} },
- sys(text,who,done){ if(!this.voice){done();return false} try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.voice=this.voice;u.lang='uk-UA';u.pitch=who==='giro'?1.55:1.05;u.rate=who==='giro'?1.03:1; u.onend=u.onerror=()=>done(); speechSynthesis.speak(u); return true}catch(e){done();return false} },
+ sys(text,who,done){ if(!this.voice){done();return false} try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.voice=this.voice;u.lang='uk-UA';u.pitch=who==='giro'?1.55:1.05;u.rate=(who==='giro'?1.03:1)*Settings.v.rate;u.volume=Settings.v.voice; u.onend=u.onerror=()=>done(); speechSynthesis.speak(u); return true}catch(e){done();return false} },
  speak(text,who,done){ if(!this.on)return false; this.stop(); let fin=false;const end=()=>{if(fin)return;fin=true;Music.setDuck(false);done()};
-  try{const a=this.el();this.au=a;a.onended=end;a.onerror=()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}};a.src='audio/'+hashTxt(text)+'.mp3';a.volume=1;const p=a.play();Music.setDuck(true);if(p&&p.catch)p.catch(()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}});return true}catch(e){return this.sys(text,who,done)} },
+  try{const a=this.el();this.au=a;a.onended=end;a.onerror=()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}};a.src='audio/'+hashTxt(text)+'.mp3';a.volume=Settings.v.voice;a.defaultPlaybackRate=Settings.v.rate;a.playbackRate=Settings.v.rate;try{a.preservesPitch=true}catch(x){}const p=a.play();Music.setDuck(true);if(p&&p.catch)p.catch(()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}});return true}catch(e){return this.sys(text,who,done)} },
  el(){if(!this._a)this._a=new Audio();return this._a},
  unlock(){try{const a=this.el();a.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},
  stop(){ try{speechSynthesis.cancel()}catch(e){} if(this.au){const a=this.au;this.au=null;a.onended=a.onerror=null;try{a.pause()}catch(e){}} Music.setDuck(false) }

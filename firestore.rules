@@ -2,10 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function okData(d) {
-      return d.keys().hasOnly(['owner','nick','room','xp','stars','t'])
+      return d.keys().hasOnly(['owner','nick','room','course','xp','stars','t'])
         && d.owner == request.auth.uid
         && d.nick is string && d.nick.size() >= 2 && d.nick.size() <= 16
         && d.room is string && d.room.size() <= 12
+        && d.course is string && d.course.size() >= 2 && d.course.size() <= 12
         && d.xp is int && d.xp >= 0 && d.xp <= 30000
         && d.stars is int && d.stars >= 0 && d.stars <= 500
         && d.t == request.time;
@@ -13,9 +14,9 @@ service cloud.firestore {
     match /players/{id} {
       allow read: if request.auth != null;
       allow create: if request.auth != null
-        && id.matches(request.auth.uid + '_p[0-9]+')
+        && id.matches(request.auth.uid + '_p[0-9]+_[a-z0-9]+')
         && okData(request.resource.data)
-        && request.resource.data.xp <= 700;
+        && request.resource.data.xp <= 5000;
       allow update: if request.auth != null
         && resource.data.owner == request.auth.uid
         && okData(request.resource.data)

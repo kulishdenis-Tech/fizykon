@@ -16,7 +16,7 @@
       <div class="hudr">
         <div class="chip" id="sparks"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l2.6 6.6L21 10l-5 4.4L17.5 21 12 17.6 6.5 21 8 14.4 3 10l6.4-1.4z" fill="#7df9ff"/></svg><b id="sparkN">0</b><span class="sp-of">/16</span><span class="sp-l">іскри</span></div>
         <button class="chip btn-i" id="bMap" title="Карта зон"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z M9 4v14 M15 6v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button><button class="chip btn-i" id="bMusic" title="Музика"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7" cy="18" r="3" fill="currentColor"/><circle cx="17" cy="16" r="3" fill="currentColor"/></svg></button>
-        <button class="chip btn-i" id="bVoice" title="Голос"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8c2 2 2 6 0 8M19 5c4 4 4 10 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button class="chip btn-i" id="bSet" title="Налаштування"><svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="chip btn-i" id="bVoice" title="Голос"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8c2 2 2 6 0 8M19 5c4 4 4 10 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div id="sub" hidden><div class="who" id="subWho"></div><div class="txt" id="subTxt"></div></div><div id="snav" class="srow"><button id="back" class="skip" hidden>◂ Назад</button><button id="replay" class="skip" hidden>↻ Ще раз</button><button id="skip" class="skip">Далі ▸</button></div>
@@ -36,15 +36,21 @@
    <label>Ім’я<input id="pName" maxlength="20" autocomplete="off" placeholder="Як тебе звати?"></label>
    <label>Вік<input id="pAge" type="number" inputmode="numeric" min="5" max="99" placeholder="12"></label>
    <div class="plbl">Ти</div><div class="seg"><button class="btn ghost" data-sex="m">Хлопець</button><button class="btn ghost" data-sex="f">Дівчина</button></div>
-   <div class="plbl">Наскільки впевнено знаєш фізику?</div><div class="seg"><button class="btn ghost" data-lvl="1">1 · Поки слабо</button><button class="btn ghost" data-lvl="2">2 · Середньо</button><button class="btn ghost" data-lvl="3">3 · Добре</button></div>
+   <div class="plbl">Наскільки впевнено знаєш предмет?</div><div class="seg"><button class="btn ghost" data-lvl="1">1 · Поки слабо</button><button class="btn ghost" data-lvl="2">2 · Середньо</button><button class="btn ghost" data-lvl="3">3 · Добре</button></div>
    <p class="note2">Від цього залежить складність: новачкам — підказки й готові вирази, «профі» — задачі без підказок і більше XP.</p>
    <button class="btn big" id="pGo">Почати</button></div>
   <p class="note2" id="pErr" style="color:#ff9fb0"></p></div></div>
-<div id="about" class="ov" hidden><div class="tbox"><div class="logo sm">ПРО ГРУ</div>
-    <p><b>Фізикон</b> — навчальна гра з фізики, 7 клас (підручник «Ранок», §12–17).</p>
-    <p>Версія: <b id="verTxt"></b></p>
-    <p class="note2">Зони: Карусель, Космос, Маятниковий міст, Крижана арена, Пружинні візки, Скарбниця, Ядро Глітча. Зроблено для Макса.</p>
-    <button class="btn" id="bAboutX">Закрити</button></div></div>
+<div id="settings" class="ov" hidden><div class="tbox"><div class="logo sm">⚙ НАЛАШТУВАННЯ</div>
+  <div class="srows">
+   <label class="sr"><span>Швидкість голосу</span><input type="range" id="sRate" min="0.8" max="1.5" step="0.05"><b id="sRateV"></b></label>
+   <label class="sr"><span>Гучність голосу</span><input type="range" id="sVoice" min="0" max="1" step="0.05"><b id="sVoiceV"></b></label>
+   <label class="sr"><span>Гучність музики</span><input type="range" id="sMusic" min="0" max="1" step="0.05"><b id="sMusicV"></b></label>
+   <label class="sr"><span>Гучність звуків</span><input type="range" id="sSfx" min="0" max="1" step="0.05"><b id="sSfxV"></b></label>
+  </div>
+  <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button></div>
+  <div class="sabout"><p><b>Фізикон</b> — навчальна гра за шкільними підручниками. Зараз: фізика 7 клас («Ранок»). Математика 5 клас — скоро. Зроблено для Макса.</p>
+  <p class="note2">Версія: <b id="verTxt"></b></p></div>
+  <button class="btn" id="sClose">Закрити</button></div></div>
 <div id="rot">↻ Поверни телефон горизонтально — гра на весь екран, набагато зручніше</div>
 </div>
 
@@ -52,17 +58,18 @@
   <div class="tbox">
     <div class="logo">ФІЗИКОН</div>
     <div class="tag">Макс і Ядро законів</div>
-    <div class="zname">Фізика, 7 клас <small>(за підручником «Ранок»)</small></div>
+    <div class="zname">Шкільні предмети грою <small>(за підручниками НУШ)</small></div>
     <button class="btn big pulse" id="bPlay">ГРАТИ</button>
-    <button class="btn ghost" id="bAbout" style="margin-top:10px">ℹ Про гру</button>
+    <button class="btn ghost" id="bAbout" style="margin-top:10px">⚙ Налаштування</button>
     <p class="note2">Звук і озвучка вмикаються після натискання. Найкраще — телефон горизонтально.</p>
   </div>
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
 </div>
 
+<div id="course" class="ov" hidden><div class="mapbox"><div class="logo sm">КЛАС І ПРЕДМЕТ</div><div id="cList"></div><p class="note2">Прогрес і рейтинг ведуться окремо для кожного предмета.</p></div></div>
 <div id="rank" class="ov" hidden><div class="tbox"><div class="logo sm">🏆 РЕЙТИНГ</div>
   <div id="rJoin">
    <p class="note2" style="margin-top:0">Змагайся з друзями! Твій <b>нік</b>, результат (XP і зірки) бачитимуть інші гравці. Нічого особистого не передається: ні імені, ні віку, ні телефону.</p>
@@ -105,6 +112,7 @@
 <script src="zones.js"></script>
 <script src="zones2.js"></script>
 <script src="levels.js"></script>
+<script src="courses.js"></script>
 <script src="main.js"></script>
 <script src="online.js"></script>
 <script src="rank.js"></script>

@@ -6,11 +6,20 @@ function voc(n){n=(n||'').trim();if(!n)return 'друже';const l=n.slice(-1).t
  if(l==='й'||l==='ь')return n.slice(0,-1)+'ю';if(l==='а')return n.slice(0,-1)+'о';if(l==='я')return n.slice(0,-1)+(V.includes(l2)?'є':'ю');if(l==='о')return n.slice(0,-1)+'е';
  if(V.includes(l))return n;if('гкх'.includes(l)&&false)return n;return n+'е'}
 const fillName=t=>String(t).replace(/\{n\}/g,voc(CUR.name||''));
-let Z=ZONES[0],RUN=0;
+let Z=COURSES[0].zones[0],RUN=0;let CID='phys7';
+const COURSE=()=>COURSES.find(c=>c.id===CID)||COURSES[0];
+const ZL=()=>COURSE().zones;
 const DB=(()=>{try{return JSON.parse(localStorage.getItem('fz4'))||{cur:null,list:[]}}catch(e){return {cur:null,list:[]}}})();
 let CUR={name:'',age:0,sex:'',lvl:2,P:{}};const P={};
 const saveDB=()=>{try{localStorage.setItem('fz4',JSON.stringify(DB))}catch(e){}};
-function setPlayer(pl){CUR=pl;DB.cur=pl.id;Object.keys(P).forEach(k=>delete P[k]);Object.assign(P,pl.P||{});pl.P=P;window.LVL=pl.lvl||2;saveDB()}
+function detachP(){if(CUR&&CUR.PP&&CUR.PP[CID]===P)CUR.PP[CID]=JSON.parse(JSON.stringify(P))}
+function loadP(){Object.keys(P).forEach(k=>delete P[k]);Object.assign(P,CUR.PP[CID]||{});CUR.PP[CID]=P}
+function setPlayer(pl){detachP();CUR=pl;DB.cur=pl.id;if(!pl.PP){pl.PP={phys7:pl.P||{}};delete pl.P}
+ CID=(pl.course&&COURSES.some(c=>c.id===pl.course&&c.ready))?pl.course:'phys7';loadP();window.LVL=pl.lvl||2;saveDB()}
+function setCourse(cid){detachP();CID=cid;CUR.course=cid;loadP();saveDB()}
+function enterApp(pl){setPlayer(pl);$('prof').hidden=true;Sfx.click();pl.course?showMap():showCourses()}
+function showCourses(){Voice.stop();$('map').hidden=true;$('course').hidden=false;
+ $('cList').innerHTML=COURSES.map(c=>'<button class="zc'+(c.ready?'':' lock')+'" data-c="'+c.id+'" style="--c:'+c.color+'"'+(c.ready?'':' disabled')+'><span class="zn">'+c.grade+' КЛАС</span><b>'+c.icon+' '+c.subj+'</b><small>'+c.book+'</small><em>'+(c.ready?(c.id===CID&&CUR.course?'✓ обрано':'грати ▸'):'скоро')+'</em></button>').join('')}
 const saveP=()=>saveDB();
 const FAST=/[?&]fast/.test(location.search);
 const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},pops:[],hits:0,shake:0,hurt:0,spin:0,T:10,Ttarget:10,val:4,
@@ -48,20 +57,20 @@ function showProfiles(){$('map').hidden=true;$('prof').hidden=false;const has=DB
  $('pList').innerHTML=DB.list.map(p=>'<button class="btn pl" data-id="'+p.id+'">👤 '+p.name.replace(/</g,'&lt;')+' <small>· '+LVN[p.lvl||2]+'</small></button>').join('');
  $('pNew').hidden=!has;$('pForm').hidden=has;$('pHead').textContent=has?'ХТО ГРАЄ?':'ПОЗНАЙОМИМОСЬ';$('pErr').textContent=''}
 function bindProfiles(){
- $('pList').addEventListener('click',e=>{const b=e.target.closest('.pl');if(!b)return;const pl=DB.list.find(p=>p.id===b.dataset.id);if(!pl)return;setPlayer(pl);$('prof').hidden=true;Sfx.click();showMap()});
+ $('pList').addEventListener('click',e=>{const b=e.target.closest('.pl');if(!b)return;const pl=DB.list.find(p=>p.id===b.dataset.id);if(!pl)return;enterApp(pl)});
  $('pNew').addEventListener('click',()=>{$('pForm').hidden=false;$('pNew').hidden=true});
  document.querySelectorAll('#pForm [data-sex]').forEach(b=>b.addEventListener('click',()=>{pForm.sex=b.dataset.sex;document.querySelectorAll('#pForm [data-sex]').forEach(x=>x.classList.toggle('sel',x===b))}));
  document.querySelectorAll('#pForm [data-lvl]').forEach(b=>b.addEventListener('click',()=>{pForm.lvl=+b.dataset.lvl;document.querySelectorAll('#pForm [data-lvl]').forEach(x=>x.classList.toggle('sel',x===b))}));
  $('pGo').addEventListener('click',()=>{const name=$('pName').value.trim().replace(/\s+/g,' ');const age=+$('pAge').value;
   if(name.length<2){$('pErr').textContent='Напиши своє ім’я.';return}if(!(age>=5&&age<=99)){$('pErr').textContent='Вкажи вік (числом).';return}if(!pForm.sex){$('pErr').textContent='Обери: хлопець чи дівчина.';return}if(!pForm.lvl){$('pErr').textContent='Обери, наскільки ти впевнений(а) у фізиці.';return}
   let old={};if(!DB.list.length){try{old=JSON.parse(localStorage.getItem('fz3'))||{}}catch(e){}}
-  const pl={id:'p'+Date.now(),name,age,sex:pForm.sex,lvl:pForm.lvl,P:old};DB.list.push(pl);setPlayer(pl);$('prof').hidden=true;Sfx.click();showMap()});
+  const pl={id:'p'+Date.now(),name,age,sex:pForm.sex,lvl:pForm.lvl,P:old};DB.list.push(pl);enterApp(pl)});
  $('bWho').addEventListener('click',()=>{Voice.stop();showProfiles()})}
 
 function showMap(){Music.play('park');RUN++;skipRes&&skipRes('abort');Voice.stop();G.mode='map';G.holoK=0;G.beat='';$('ctl').classList.add('hide');$('hint').hidden=true;$('sub').hidden=true;$('play').hidden=true;$('endcard').hidden=true;$('task').hidden=true;
- $('mapList').innerHTML=ZONES.map(z=>{const p=P[z.id];return '<button class="zc" data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+z.id+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>'+(p?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
- const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent=(CUR.name?'Гравець: '+CUR.name+' · рівень: '+LVN[CUR.lvl||2]+' · ':'')+'Загалом досвіду: '+tot+' XP';$('map').hidden=false}
-async function startZone(id){Z=ZONES.find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
+ $('mapList').innerHTML=ZL().map(z=>{const p=P[z.id];return '<button class="zc" data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+z.id+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>'+(p?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
+ const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent=COURSE().subj+', '+COURSE().grade+' клас · '+(CUR.name?'Гравець: '+CUR.name+' · рівень: '+LVN[CUR.lvl||2]+' · ':'')+'Загалом досвіду: '+tot+' XP';$('map').hidden=false}
+async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+Z.id+'</b><span>'+Z.par+' · '+Z.name+'</span>';
  Object.assign(G,{mode:'intro',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:false,Tmin:99,Tmax:0,unlocked:false,cutDone:false,T:10,Ttarget:10,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
  $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';
@@ -97,8 +106,10 @@ async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout((
  const old=P[Z.id]||{xp:0,stars:0};P[Z.id]={xp:Math.max(old.xp,G.xp),stars:Math.max(old.stars,G.stars),max:Tasks.max()};saveP();window.Rank&&Rank.sync();
  $('endTag').textContent='Отримано деталь Ядра: «'+Z.gem+'»';
  $('endStat').innerHTML='Досвід: <b>+'+G.xp+' XP</b> · зірки за задачі: <b>'+G.stars+'/'+Tasks.max()+'</b><br>іскри: <b>'+G.sparks+'/'+SPARKS.length+'</b> (бонус <b>+'+G.bonus+' XP</b>'+(G.sparks>=SPARKS.length?', усі зібрано!':'')+')';
- $('bNext').hidden=!ZONES.find(z=>z.id===Z.id+1);$('endcard').hidden=false}
-bindProfiles();$('bPlay').addEventListener('click',startGame);$('verTxt').textContent=GAME_VER;$('bAbout').addEventListener('click',()=>{$('about').hidden=false});$('bAboutX').addEventListener('click',()=>{$('about').hidden=true});
+ $('bNext').hidden=!ZL().find(z=>z.id===Z.id+1);$('endcard').hidden=false}
+$('cList').addEventListener('click',e=>{const b=e.target.closest('.zc');if(!b||b.disabled)return;Sfx.click();setCourse(b.dataset.c);$('course').hidden=true;showMap()});
+$('bCourse').addEventListener('click',()=>{Sfx.click();showCourses()});
+bindProfiles();$('bPlay').addEventListener('click',startGame);$('verTxt').textContent=GAME_VER;
 $('mapList').addEventListener('click',e=>{const b=e.target.closest('.zc');if(b&&!b.disabled){Sfx.click();startZone(+b.dataset.z)}});
 $('bMap').addEventListener('click',()=>{Sfx.click();showMap()});$('bMap2').addEventListener('click',()=>{Sfx.click();showMap()});
 $('bNext').addEventListener('click',()=>{Sfx.click();startZone(Z.id+1)});
@@ -189,3 +200,15 @@ function draw(){
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);if(G.mode!=='task'||!document.body.classList.contains('intask'))draw();requestAnimationFrame(loop)}
 Art.init();requestAnimationFrame(loop);
 G.debug={teleport(x){G.px=x;G.cam=G.camT=clamp(x-420,0,CAMCUT)},skip(){skipRes&&skipRes()},openTasks};
+
+/* ---------- налаштування ---------- */
+(()=>{const S=Settings,f=v=>Math.round(v*100)+'%';
+ const map=[['sRate','rate',v=>v.toFixed(2).replace(/0$/,'').replace(/\.$/,'')+'×'],['sVoice','voice',f],['sMusic','music',f],['sSfx','sfx',f]];
+ const sync=()=>map.forEach(([id,k,fm])=>{$(id).value=S.v[k];$(id+'V').textContent=fm(S.v[k])});
+ const open=()=>{Sfx.click();sync();$('settings').hidden=false};
+ map.forEach(([id,k,fm])=>$(id).addEventListener('input',e=>{S.v[k]=parseFloat(e.target.value);$(id+'V').textContent=fm(S.v[k]);S.save();S.apply()}));
+ $('bAbout').addEventListener('click',()=>{try{Sfx.init()}catch(e){}open()});$('bSet').addEventListener('click',open);$('bSet2').addEventListener('click',open);
+ $('sClose').addEventListener('click',()=>{Sfx.click();Voice.stop();$('settings').hidden=true});
+ $('sReset').addEventListener('click',()=>{Object.assign(S.v,{rate:1,voice:1,music:.5,sfx:1});S.save();S.apply();sync()});
+ $('sTest').addEventListener('click',()=>{try{Sfx.init();Voice.init();Voice.unlock()}catch(e){}Voice.speak('Поїхали!','max',()=>{})});
+ S.apply()})();

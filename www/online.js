@@ -26,20 +26,20 @@ const Online=(()=>{
  const clean=s=>String(s||'').replace(/[<>&"'`\\]/g,'').replace(/\s+/g,' ').trim();
  const normRoom=s=>String(s||'').toUpperCase().replace(/[^A-ZА-ЯІЇЄҐ0-9]/g,'').slice(0,12);
  const str=v=>({stringValue:v}),int=v=>({integerValue:String(Math.round(v))});
- async function docId(pid){await token();return S.uid+'_'+pid}
+ async function docId(pid,cid){await token();return S.uid+'_'+pid+'_'+cid}
  /* записати результат гравця (профіль pl: {id,online:{nick,room}}) */
- async function push(pl,xp,stars){
+ async function push(pl,xp,stars,cid){
   const o=pl.online;if(!o||!o.on)return;
-  const id=await docId(pl.id);
-  const body={writes:[{update:{name:DOC+'/players/'+id,fields:{owner:str(S.uid),nick:str(o.nick),room:str(o.room||''),xp:int(xp),stars:int(stars)}},updateTransforms:[{fieldPath:'t',setToServerValue:'REQUEST_TIME'}]}]};
+  const id=await docId(pl.id,cid);
+  const body={writes:[{update:{name:DOC+'/players/'+id,fields:{owner:str(S.uid),nick:str(o.nick),room:str(o.room||''),course:str(cid),xp:int(xp),stars:int(stars)}},updateTransforms:[{fieldPath:'t',setToServerValue:'REQUEST_TIME'}]}]};
   await jf(FS+':commit',{method:'POST',headers:await hdr(),body:JSON.stringify(body)})}
- async function leave(pl){const id=await docId(pl.id);await jf(FS+'/players/'+id,{method:'DELETE',headers:await hdr()})}
- const parse=r=>r.filter(x=>x.document).map(x=>{const f=x.document.fields||{};return{id:x.document.name.split('/').pop(),nick:(f.nick||{}).stringValue||'?',room:(f.room||{}).stringValue||'',xp:+((f.xp||{}).integerValue||0),stars:+((f.stars||{}).integerValue||0)}});
- async function top(room){
-  const q=room?{from:[{collectionId:'players'}],where:{fieldFilter:{field:{fieldPath:'room'},op:'EQUAL',value:str(room)}},limit:200}
-              :{from:[{collectionId:'players'}],orderBy:[{field:{fieldPath:'xp'},direction:'DESCENDING'}],limit:30};
+ async function leave(pl,cids){for(const c of cids){const id=await docId(pl.id,c);try{await jf(FS+'/players/'+id,{method:'DELETE',headers:await hdr()})}catch(e){if(e.code!==404)throw e}}}
+ const parse=r=>r.filter(x=>x.document).map(x=>{const f=x.document.fields||{};return{id:x.document.name.split('/').pop(),nick:(f.nick||{}).stringValue||'?',room:(f.room||{}).stringValue||'',course:(f.course||{}).stringValue||'',xp:+((f.xp||{}).integerValue||0),stars:+((f.stars||{}).integerValue||0)}});
+ async function top(room,cid){
+  const q=room?{from:[{collectionId:'players'}],where:{fieldFilter:{field:{fieldPath:'room'},op:'EQUAL',value:str(room)}},limit:300}
+              :{from:[{collectionId:'players'}],where:{fieldFilter:{field:{fieldPath:'course'},op:'EQUAL',value:str(cid)}},limit:300};
   const r=await jf(FS+':runQuery',{method:'POST',headers:await hdr(),body:JSON.stringify({structuredQuery:q})});
-  const l=parse(r);l.sort((a,b)=>b.xp-a.xp||b.stars-a.stars);return l.slice(0,30)}
- const myId=pl=>S&&S.uid?S.uid+'_'+pl.id:null;
+  const l=parse(r).filter(x=>x.course===cid);l.sort((a,b)=>b.xp-a.xp||b.stars-a.stars);return l.slice(0,30)}
+ const myId=(pl,cid)=>S&&S.uid?S.uid+'_'+pl.id+'_'+cid:null;
  return{push,leave,top,clean,normRoom,myId,token,get uid(){return S&&S.uid}}
 })();

@@ -14,15 +14,15 @@ const Rank=(()=>{
   if(!joined){
    $('rNick').value=(o&&o.nick)||firstWord(CUR.name);$('rRoom').value=(o&&o.room)||'';
    $('rLeave').hidden=!(o&&o.on);$('rCancel').hidden=!(o&&o.on);return}
-  $('rWho').textContent=o.nick+(o.room?' · клас '+o.room:'');
+  $('rWho').textContent=COURSE().subj+', '+COURSE().grade+' кл. · '+o.nick+(o.room?' · клас '+o.room:'');
   $('rTabRoom').hidden=!o.room;if(!o.room)tab='all';
   $('rTabRoom').classList.toggle('sel',tab==='room');$('rTabAll').classList.toggle('sel',tab==='all');
   load()}
  async function load(){
   const o=CUR.online,box=$('rList');box.innerHTML='<p class="note2">Завантаження…</p>';
   try{
-   const l=await Online.top(tab==='room'?o.room:'');
-   const me=Online.myId(CUR);box.innerHTML='';
+   const l=await Online.top(tab==='room'?o.room:'',CID);
+   const me=Online.myId(CUR,CID);box.innerHTML='';
    if(!l.length){box.innerHTML='<p class="note2">Поки нікого. Пройди зону — і ти з’явишся тут!</p>';return}
    l.forEach((r,i)=>{const row=document.createElement('div');row.className='rr'+(r.id===me?' me':'');
     const mk=(c,t)=>{const s=document.createElement('span');s.className=c;s.textContent=t;row.appendChild(s)};
@@ -34,14 +34,14 @@ const Rank=(()=>{
   if(nick.length<2){msg('Нік має бути від 2 літер.');return}
   const prev=CUR.online;CUR.online={on:true,nick,room};
   $('rGo').disabled=true;msg('Підключаємось…');
-  try{const t=tot();await Online.push(CUR,t.xp,t.st);saveDB();editing=false;Sfx.ok();render()}
+  try{const t=tot();await Online.push(CUR,t.xp,t.st,CID);saveDB();editing=false;Sfx.ok();render()}
   catch(e){CUR.online=prev;msg(errText(e))}
   finally{$('rGo').disabled=false}}
  async function leave(){
   if(!confirm('Вийти з рейтингу? Твій нік і результат буде видалено з таблиці.'))return;
-  try{await Online.leave(CUR)}catch(e){if(e.code!==404){msg(errText(e));return}}
+  try{await Online.leave(CUR,COURSES.map(c=>c.id))}catch(e){msg(errText(e));return}
   CUR.online=null;saveDB();editing=false;render()}
- function sync(){const o=CUR&&CUR.online;if(!o||!o.on)return;const t=tot();Online.push(CUR,t.xp,t.st).catch(()=>{})}
+ function sync(){const o=CUR&&CUR.online;if(!o||!o.on)return;const t=tot();Online.push(CUR,t.xp,t.st,CID).catch(()=>{})}
  function bind(){
   $('bRank').addEventListener('click',open);$('rBack').addEventListener('click',()=>{Sfx.click();close()});$('rBack2').addEventListener('click',()=>{Sfx.click();close()});
   $('rGo').addEventListener('click',join);$('rLeave').addEventListener('click',leave);
