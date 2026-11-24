@@ -202,3 +202,21 @@ summary{cursor:pointer;font-weight:700}
 #course{z-index:40;background:#070b22}
 #cList{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:10px 0}
 #course .logo.sm{margin-bottom:4px}
+
+#theory{z-index:45;background:#070b22}
+.thz{color:var(--mute);font-weight:800;margin:2px 0 8px}
+.thcard{text-align:left;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(10,16,44,.85));border:2px solid #38bdf8;border-radius:16px;padding:12px 16px;min-height:120px;font-size:15px;line-height:1.45}
+.thcard h3{margin:0 0 6px;font-size:19px}.thcard p{margin:5px 0}.thcard ul{margin:4px 0;padding-left:20px}
+.thcard .fm{font-family:'Russo One',Rubik,sans-serif;font-size:22px;color:#fde68a;text-align:center;margin:8px 0}
+.thdots{display:flex;gap:6px;justify-content:center;margin:8px 0}.thdots i{width:9px;height:9px;border-radius:50%;background:#3b4372}.thdots i.on{background:#38bdf8}
+.thb{align-self:flex-start;font-size:12.5px;font-weight:800;color:#bae6fd;border:1px solid #38bdf8;border-radius:10px;padding:2px 8px;margin-top:4px}
+#tTheory{padding:6px 12px;font-size:14px}
+
+#cheat{z-index:45;background:#070b22}
+#cheat .tbox.wide{width:min(900px,100%)}
+#chView{max-height:46vh;overflow:auto;margin:8px auto;width:min(340px,70%);border-radius:6px}
+#chTabs{flex-wrap:wrap;justify-content:center}#chTabs .btn{padding:6px 12px;font-size:14px}
+#chImg{display:none}
+@media print{body.printing>*:not(#chImg){display:none!important}body.printing{background:#fff}
+ img#chImg{display:block!important;width:100%;height:auto;position:static}@page{size:A4;margin:0}}
+#cheat .logo.sm,#theory .logo.sm{margin-bottom:10px}

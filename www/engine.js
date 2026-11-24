@@ -1,4 +1,4 @@
-const GAME_VER='1.13 (вибір класу і предмета, налаштування)';
+const GAME_VER='1.14 (теорія по темах, шпаргалки з PDF)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;

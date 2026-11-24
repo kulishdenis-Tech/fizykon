@@ -66,7 +66,7 @@
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bCheat">📝 Шпаргалки</button> <button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
 </div>
 
 <div id="course" class="ov" hidden><div class="mapbox"><div class="logo sm">КЛАС І ПРЕДМЕТ</div><div id="cList"></div><p class="note2">Прогрес і рейтинг ведуться окремо для кожного предмета.</p></div></div>
@@ -88,12 +88,20 @@
   <p class="note2" id="rMsg" style="color:#ff9fb0"></p></div></div>
 <div id="task" class="ov" hidden>
   <div class="tin">
-    <div class="thead"><button class="btn ghost" id="tclose">← До гри</button><span class="pill" id="tbadge"></span><span class="tprog" id="tprog"></span></div>
+    <div class="thead"><button class="btn ghost" id="tclose">← До гри</button><button class="btn ghost" id="tTheory">📖 Нагадати</button><span class="pill" id="tbadge"></span><span class="tprog" id="tprog"></span></div>
     <div class="story" id="tstory"></div>
     <div id="stp"></div>
     <div class="card" id="wb"></div>
   </div>
 </div>
+
+<div id="theory" class="ov" hidden><div class="tbox"><div class="logo sm">ТЕОРІЯ</div><div class="thz" id="thTitle"></div>
+  <div class="thcard" id="thBody"></div><div class="thdots" id="thDots"></div>
+  <div class="row"><button class="btn ghost" id="thPrev">◂ Назад</button><button class="btn" id="thNext">Далі ▸</button><button class="btn ghost" id="thClose">Закрити</button></div></div></div>
+
+<div id="cheat" class="ov" hidden><div class="tbox wide"><div class="logo sm">ШПАРГАЛКИ</div>
+  <div class="seg" id="chTabs"></div><div id="chView"></div>
+  <div class="row"><button class="btn" id="chPdf">⬇ Зберегти PDF</button><button class="btn ghost" id="chPrint">🖨 Друк</button><button class="btn ghost" id="chClose">Закрити</button></div></div></div>
 
 <div id="endcard" class="ov" hidden>
   <div class="tbox">
@@ -114,6 +122,8 @@
 <script src="levels.js"></script>
 <script src="courses.js"></script>
 <script src="main.js"></script>
+<script src="theory.js"></script>
+<script src="cheat.js"></script>
 <script src="online.js"></script>
 <script src="rank.js"></script>
 </body>
