@@ -29,10 +29,20 @@ const FAST=/[?&]fast/.test(location.search);
 const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},pops:[],hits:0,shake:0,hurt:0,spin:0,T:10,Ttarget:10,val:4,
  holoK:0,holoTitle:'',beat:'',beatT0:0,spin0:0,arrived:false,Tmin:99,Tmax:0,xp:0,stars:0,unlocked:false,cutDone:false,giroX:300,giroY:380,giroMood:0,fx:[],pops:[],shake:0,hits:0};
 window.G=G;
-const SPARKS=[];for(let i=0;i<16;i++){const x=520+i*150+(i%3)*30;SPARKS.push({x,y:FEET-70-(i%4===1?95:i%4===3?40:0)})}
-const BLOCKS=[780,1330,1880,2300];
-const LASTSPARK=Math.max(...SPARKS.map(s=>s.x));
-
+let SPARKS=[],BLOCKS=[],LASTSPARK=0,ENEM=[],BOSS=null;
+const ENAME={walk:'Глітч',dash:'Спідлінг',fly:'Дрон-хаос',boss:'Міні-Ентропус'};
+function setLayout(zi,id){const R=rng(id*7919+13),L=window.LVL||2;SPARKS=[];let x=520;
+ for(let i=0;i<16;i++){const h=[0,95,0,40,0,70][Math.floor(R()*6)];SPARKS.push({x:Math.round(x),y:FEET-70-h});x+=125+R()*45}
+ LASTSPARK=Math.max(...SPARKS.map(q=>q.x));
+ BLOCKS=[];let bx=760;for(let i=0;i<4;i++){bx+=240+R()*260;if(bx>LASTSPARK-200)break;BLOCKS.push(Math.round(bx))}
+ spawnEnemies(zi,R,L)}
+function spawnEnemies(zi,R,L){ENEM=[];BOSS=null;const n=Math.max(2,Math.min(8,2+(zi>>1)+(L-2))),sp=(46+zi*3.5)*(L===1?.8:L===3?1.2:1);
+ const types=['walk'];if(zi>=1)types.push('dash');if(zi>=3)types.push('fly');
+ for(let i=0;i<n;i++){const t=types[i%types.length],ex=Math.round(900+(LASTSPARK-1400)*(i+.4)/n+R()*120);
+  ENEM.push({type:t,x:ex,x0:ex,rng:t==='fly'?220:150,y:FEET,spd:sp*(t==='fly'?1.3:1),dir:R()<.5?-1:1,ph:R()*6,alive:true,cd:1.5+R()*2,dash:0,tele:0})}
+ if(zi%3===2){BOSS={type:'boss',boss:true,x:LASTSPARK-80,x0:LASTSPARK-80,rng:170,y:FEET,spd:sp*1.4,dir:-1,ph:0,alive:true,hp:3,inv:0,cd:2,dash:0,tele:0};ENEM.push(BOSS)}
+ G.deaths=G.deaths||0}
+const lifeHud=()=>{const e=$('livesN');if(e)e.textContent='♥'.repeat(Math.max(0,G.lives))+'♡'.repeat(Math.max(0,3-G.lives))};
 const sparkHud=()=>{$('sparkN').textContent=G.sparks};
 const pop=(x,y,t,c)=>{G.pops.push({x,y,t,c,l:1.3})};
 let tipTO=0;const tip=(t,ms=3500)=>{const h=$('hint');h.hidden=false;h.textContent=t;clearTimeout(tipTO);tipTO=setTimeout(()=>{if(G.mode==='run')h.textContent='✦ збирай іскри · ▲ перестрибуй фіолетові блоки'},ms)};
@@ -75,12 +85,13 @@ function showMap(){Music.play('park');RUN++;G.sparks=0;sparkHud();skipRes&&skipR
  const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent=COURSE().subj+', '+COURSE().grade+' клас · '+(CUR.name?'Гравець: '+CUR.name+' · рівень: '+LVN[CUR.lvl||2]+' · ':'')+'Загалом досвіду: '+tot+' XP';$('map').hidden=false}
 async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+(ZL().findIndex(q=>q.id===Z.id)+1)+'</b><span>'+Z.par+' · '+Z.name+'</span>';
+ G.deaths=0;G.kills=0;G.lives=3;setLayout(ZL().findIndex(q=>q.id===Z.id),Z.id);lifeHud();
  Object.assign(G,{mode:'intro',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:false,Tmin:99,Tmax:0,unlocked:false,cutDone:false,T:10,Ttarget:10,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
  $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';
  $('plabel').innerHTML=Z.play.label?Z.play.label.replace(/^(\S+)\s(.+)$/,'$1 <b>$2</b>'):'Період <b>T</b>';const sl=$('tslider');sl.min=Z.play.min;sl.max=Z.play.max;sl.step=Z.play.step;sl.value=Z.play.val;$('tval').textContent=Z.play.fmt(Z.play.val);
  Tasks.setList(Z.tasks.map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
  for(const l of Z.intro){await say(l[0],l[1],l[2]);if(tok!==RUN)return}
- $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй фіолетові блоки';
+ $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй блоки · наступай на глітчів згори';tip('Ентропус зіпсував закон цієї зони. Його глітчі розсипаються, якщо наступити зверху.',5200);
 }
 function zoneLocked(zi){if(CUR.openAll||zi===0)return false;const L=ZL();for(let k=zi;k<L.length;k++){const q=P[L[k].id];if(q&&(q.max||q.part))return false}const pq=P[L[zi-1].id];return !(pq&&pq.max&&pq.stars>=1)}
 function resumeZone(id,fresh){Z=ZL().find(z=>z.id===id);++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
@@ -110,7 +121,7 @@ function openTasks(i){G.mode='task';$('play').hidden=true;Tasks.open(i,(res,pr)=
  if(!res){if(pr&&pr.i<Z.tasks.length&&(pr.i>0||pr.t.done>0)){const o=P[Z.id]||(P[Z.id]={xp:0,stars:0});o.part=pr;saveP()}showMap();return}
  G.xp=res.xp;G.stars=res.stars;finish()})}
 async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout(()=>Sfx.ok(),400);
- const bonus=G.sparks*2+(G.sparks>=SPARKS.length?10:0);G.bonus=bonus;G.xp+=bonus;
+ const bonus=G.sparks*2+(G.sparks>=SPARKS.length?10:0)+(G.kills||0)*2+(BOSS&&!BOSS.alive?10:0);G.bonus=bonus;G.xp+=bonus;
  const old=P[Z.id]||{xp:0,stars:0};P[Z.id]={xp:Math.max(old.xp,G.xp),stars:Math.max(old.stars,G.stars),max:Tasks.max()};saveP();window.Rank&&Rank.sync();
  $('endTag').textContent='Отримано деталь Ядра: «'+Z.gem+'»';
  $('endStat').innerHTML='Досвід: <b>+'+G.xp+' XP</b> · зірки за задачі: <b>'+G.stars+'/'+Tasks.max()+'</b><br>іскри: <b>'+G.sparks+'/'+SPARKS.length+'</b> (бонус <b>+'+G.bonus+' XP</b>'+(G.sparks>=SPARKS.length?', усі зібрано!':'')+')';
@@ -153,6 +164,7 @@ function update(dt){
     pop(bx,FEET-90,lost?'−'+lost+' ✦ Глітч вкрав іскри!':'Глітч-блок! Стрибай ▲','#ff4d8d');G.hits=(G.hits||0)+1;
     if(G.hits===1)tip('⚠ Червоні глітч-блоки крадуть іскри. Перестрибуй їх: пробіл або ▲',4200);
     for(let k=0;k<10;k++)G.fx.push({x:bx,y:FEET-40,vx:(Math.random()-.5)*400,vy:-Math.random()*300,l:.5})}});
+  updEnemies(dt);
   G.camT=clamp(G.px-420,0,CAMCUT);
   if(G.px>LASTSPARK+90&&G.mode==='run'){cutscene()}
  }
@@ -170,6 +182,40 @@ function update(dt){
  G.fx.forEach(f=>{f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=700*dt;f.l-=dt});G.fx=G.fx.filter(f=>f.l>0);
 }
 
+
+function updEnemies(dt){
+ const sc=Math.max(.6,1-.12*(G.deaths||0));
+ ENEM.forEach(e=>{if(!e.alive)return;e.ph+=dt;if(e.inv>0)e.inv-=dt;
+  if(e.type==='dash'){if(e.dash>0){e.x+=e.dir*430*dt;e.dash-=dt;if(e.dash<=0){e.dir=-e.dir;e.cd=2.2}}else if(e.tele>0){e.tele-=dt;if(e.tele<=0)e.dash=.55}else{e.cd-=dt;if(e.cd<=0&&Math.abs(e.x-G.px)<520){e.dir=G.px<e.x?-1:1;e.tele=.55}}}
+  else{e.x+=e.dir*e.spd*sc*dt;if(Math.abs(e.x-e.x0)>e.rng)e.dir=e.x>e.x0?-1:1}
+  e.y=e.type==='fly'?FEET-120-Math.abs(Math.sin(e.ph*1.6))*70:FEET;
+  if(G.hurt>0||e.inv>0&&false)return;
+  const s=e.boss?2.4:1.25,fy=FEET+G.y,top=e.y-52*s;
+  if(Math.abs(e.x-G.px)<28+24*s&&fy>top&&fy-110<e.y){
+   if(G.vy>40&&fy<top+34*s+10){hitEnemy(e);G.vy=-Z.jump*.65}
+   else if(!(e.inv>0))hurtPlayer(e.x)}});
+ if(BOSS&&BOSS.alive&&G.px>LASTSPARK+30)G.px=LASTSPARK+30}
+function hitEnemy(e){if(e.boss){if(e.inv>0)return;e.hp--;e.inv=.9;Sfx.ok();pop(e.x,e.y-130,e.hp>0?'Ще '+e.hp+'!':'Знищено!','#ffd166');G.shake=.2;if(e.hp>0)return}
+ e.alive=false;G.kills=(G.kills||0)+1;Sfx.coin();pop(e.x,e.y-60,e.boss?'Міні-Ентропус розсипався! +10 XP':'+1 ✦ розсипався','#7df9ff');
+ if(CUR){const b=CUR.best||(CUR.best={});b[e.type]=(b[e.type]||0)+1;saveDB()}
+ for(let k=0;k<(e.boss?30:14);k++)G.fx.push({x:e.x,y:e.y-26,vx:(Math.random()-.5)*480,vy:-Math.random()*380,l:.7})}
+function hurtPlayer(ex){G.hurt=1.2;G.px+=(G.px<ex?-1:1)*110;G.vx=(G.px<ex?-1:1)*200;G.lives--;lifeHud();Sfx.hit();G.shake=.35;
+ let lost=0;for(let i=SPARKS.length-1;i>=0&&lost<2;i--){if(G.got[i]){G.got[i]=0;lost++}}G.sparks-=lost;sparkHud();
+ pop(ex,FEET-100,lost?'−'+lost+' ✦ і ♥':'♥ −1','#ff4d8d');
+ for(let k=0;k<10;k++)G.fx.push({x:G.px,y:FEET-40,vx:(Math.random()-.5)*400,vy:-Math.random()*300,l:.5});
+ if(G.lives<=0){G.deaths=(G.deaths||0)+1;G.lives=3;lifeHud();G.px=200;G.vx=0;G.got={};G.sparks=0;sparkHud();spawnEnemies(ZL().findIndex(q=>q.id===Z.id),rng(Z.id*31+G.deaths),window.LVL||2);
+  tip('Ентропус відкинув тебе на старт! Спробуй ще — глітчі стали повільнішими.',4200)}}
+function drawEn(c,e,x,t){const s=e.boss?2.4:1.25,f=e.dir>0?1:-1,fl=e.tele>0&&Math.floor(t*16)%2;
+ c.save();c.translate(x,e.y);c.scale(s*f,s);if(e.inv>0&&Math.floor(t*20)%2)c.globalAlpha=.4;
+ const col=e.boss?'#b04dff':e.type==='dash'?(fl?'#fff':'#ff9a3d'):e.type==='fly'?'#4dd2ff':'#ff4d8d';
+ c.shadowColor=col;c.shadowBlur=14;c.fillStyle=col;
+ const w=Math.sin(e.ph*10)*5;
+ if(e.type==='fly'){c.beginPath();c.ellipse(0,-26,26,20,0,0,TAU);c.fill();c.fillStyle='rgba(255,255,255,.55)';c.beginPath();c.ellipse(-24,-40-w,16,7,-.5,0,TAU);c.ellipse(24,-40-w,16,7,.5,0,TAU);c.fill()}
+ else{rr(c,-27,-50,54,42,10);c.fill();if(e.type==='dash'){c.beginPath();c.moveTo(-18,-50);c.lineTo(-8,-66);c.lineTo(0,-50);c.lineTo(8,-66);c.lineTo(18,-50);c.fill()}
+  c.fillRect(-20,-10,12,10+w*.4);c.fillRect(8,-10,12,10-w*.4)}
+ c.shadowBlur=0;c.fillStyle='#fff';c.beginPath();c.arc(-9,-32,7,0,TAU);c.arc(11,-32,7,0,TAU);c.fill();c.fillStyle='#1a1030';c.beginPath();c.arc(-6,-31,3.2,0,TAU);c.arc(14,-31,3.2,0,TAU);c.fill();
+ c.strokeStyle='#1a1030';c.lineWidth=3;c.beginPath();c.moveTo(-16,-42);c.lineTo(-3,-38);c.moveTo(18,-42);c.lineTo(5,-38);c.stroke();
+ c.restore()}
 /* ---------- holo ---------- */
 function holo(c){
  const k=ease(G.holoK);if(k<.02)return;const bt=G.t-G.beatT0,rev=(G.spin-G.spin0)/TAU,T=G.T,a=G.spin;
@@ -190,6 +236,7 @@ function draw(){
  const cxs=CX-cam;let mark=null;if(cxs>-400&&cxs<VW+400&&G.mode!=='map'&&G.mode!=='title'){Z.landmark(c,cxs,t,G.spin)}
  // blocks & sparks
  BLOCKS.forEach((bx,i)=>{const x=bx-cam;if(x>-80&&x<VW+80)Art.cube(c,x,t,i*3)});
+ ENEM.forEach(e=>{if(!e.alive)return;const x=e.x-cam;if(x>-120&&x<VW+120)drawEn(c,e,x,t)});
  SPARKS.forEach((s,i)=>{if(G.got[i])return;const x=s.x-cam;if(x>-60&&x<VW+60)Art.spark(c,x,s.y,t)});
  // max
  const mx=G.px-cam,run=Math.min(1,Math.abs(G.vx)/200);
