@@ -30,7 +30,17 @@
     <div class="pad"><button class="cb" id="bL" aria-label="вліво"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="cb" id="bR" aria-label="вправо"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
     <button class="cb jump" id="bJ" aria-label="стрибок"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
-  <div id="about" class="ov" hidden><div class="tbox"><div class="logo sm">ПРО ГРУ</div>
+  <div id="prof" class="ov" hidden><div class="tbox"><div class="logo sm" id="pHead">ХТО ГРАЄ?</div>
+  <div id="pList"></div><button class="btn ghost" id="pNew" hidden>＋ Новий гравець</button>
+  <div id="pForm">
+   <label>Ім’я<input id="pName" maxlength="20" autocomplete="off" placeholder="Як тебе звати?"></label>
+   <label>Вік<input id="pAge" type="number" inputmode="numeric" min="5" max="99" placeholder="12"></label>
+   <div class="plbl">Ти</div><div class="seg"><button class="btn ghost" data-sex="m">Хлопець</button><button class="btn ghost" data-sex="f">Дівчина</button></div>
+   <div class="plbl">Наскільки впевнено знаєш фізику?</div><div class="seg"><button class="btn ghost" data-lvl="1">1 · Поки слабо</button><button class="btn ghost" data-lvl="2">2 · Середньо</button><button class="btn ghost" data-lvl="3">3 · Добре</button></div>
+   <p class="note2">Від цього залежить складність: новачкам — підказки й готові вирази, «профі» — задачі без підказок і більше XP.</p>
+   <button class="btn big" id="pGo">Почати</button></div>
+  <p class="note2" id="pErr" style="color:#ff9fb0"></p></div></div>
+<div id="about" class="ov" hidden><div class="tbox"><div class="logo sm">ПРО ГРУ</div>
     <p><b>Фізикон</b> — навчальна гра з фізики, 7 клас (підручник «Ранок», §12–17).</p>
     <p>Версія: <b id="verTxt"></b></p>
     <p class="note2">Зони: Карусель, Космос, Маятниковий міст, Крижана арена, Пружинні візки, Скарбниця, Ядро Глітча. Зроблено для Макса.</p>
@@ -50,7 +60,7 @@
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
 </div>
 
 <div id="task" class="ov" hidden>

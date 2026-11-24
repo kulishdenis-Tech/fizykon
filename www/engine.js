@@ -1,4 +1,4 @@
-const GAME_VER='1.4 (озвучка, нова музика)';
+const GAME_VER='1.5 (профілі, озвучка v2)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;

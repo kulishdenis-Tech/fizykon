@@ -1,7 +1,17 @@
 'use strict';
 const cv=$('cv'),ctx=cv.getContext('2d');
 const CX=3000,STOPX=CX+275,CAMCUT=CX-360;
-let Z=ZONES[0],RUN=0;const P=(()=>{try{return JSON.parse(localStorage.getItem('fz3'))||{}}catch(e){return {}}})();const saveP=()=>{try{localStorage.setItem('fz3',JSON.stringify(P))}catch(e){}};
+const NAMES={};
+function voc(n){n=(n||'').trim();if(!n)return 'друже';const l=n.slice(-1).toLowerCase(),l2=n.slice(-2,-1).toLowerCase();const V='аеєиіїоуюя';
+ if(l==='й'||l==='ь')return n.slice(0,-1)+'ю';if(l==='а')return n.slice(0,-1)+'о';if(l==='я')return n.slice(0,-1)+(V.includes(l2)?'є':'ю');if(l==='о')return n.slice(0,-1)+'е';
+ if(V.includes(l))return n;if('гкх'.includes(l)&&false)return n;return n+'е'}
+const fillName=t=>String(t).replace(/\{n\}/g,voc(CUR.name||''));
+let Z=ZONES[0],RUN=0;
+const DB=(()=>{try{return JSON.parse(localStorage.getItem('fz4'))||{cur:null,list:[]}}catch(e){return {cur:null,list:[]}}})();
+let CUR={name:'',age:0,sex:'',lvl:2,P:{}};const P={};
+const saveDB=()=>{try{localStorage.setItem('fz4',JSON.stringify(DB))}catch(e){}};
+function setPlayer(pl){CUR=pl;DB.cur=pl.id;Object.keys(P).forEach(k=>delete P[k]);Object.assign(P,pl.P||{});pl.P=P;window.LVL=pl.lvl||2;saveDB()}
+const saveP=()=>saveDB();
 const FAST=/[?&]fast/.test(location.search);
 const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},pops:[],hits:0,shake:0,hurt:0,spin:0,T:10,Ttarget:10,val:4,
  holoK:0,holoTitle:'',beat:'',beatT0:0,spin0:0,arrived:false,Tmin:99,Tmax:0,xp:0,stars:0,unlocked:false,cutDone:false,giroX:300,giroY:380,giroMood:0,fx:[],pops:[],shake:0,hits:0};
@@ -15,7 +25,7 @@ let tipTO=0;const tip=(t,ms=3500)=>{const h=$('hint');h.hidden=false;h.textConte
 /* ---------- speech ---------- */
 let skipRes=null;
 function say(who,txt,spoken,min=0,nav=null){return new Promise(resolve=>{
- const sub=$('sub'),sk=$('skip');sub.hidden=false;sub.className=who;$('subWho').textContent=who==='giro'?'Гіро':'Макс';$('subTxt').textContent=txt;sk.classList.remove('ready');
+ const sub=$('sub'),sk=$('skip');sub.hidden=false;sub.className=who;$('subWho').textContent=who==='giro'?'Гіро':'Макс';$('subTxt').textContent=fillName(txt);sk.classList.remove('ready');
  $('back').hidden=!(nav&&nav.back);$('replay').hidden=!nav;
  let fin=false,speechOK=false,minOK=min<=0;const k=FAST?.25:1;
  const est=Math.max(2.2,spoken.length*.07)*1000*k,t0=performance.now();
@@ -31,10 +41,25 @@ const until=f=>new Promise(r=>{const i=setInterval(()=>{if(f()){clearInterval(i)
 $('skip').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('next')});$('back').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('back')});$('replay').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('replay')});$('sub').addEventListener('click',()=>{skipRes&&skipRes()});
 
 /* ---------- flow ---------- */
-async function startGame(){Sfx.init();Voice.init();Voice.unlock();Sfx.startMusic();Sfx.click();$('title').hidden=true;showMap()}
+async function startGame(){Sfx.init();Voice.init();Voice.unlock();Sfx.startMusic();Sfx.click();$('title').hidden=true;showProfiles()}
+const LVN=['','Новачок','Середній','Профі'];let pForm={sex:'',lvl:0};
+function showProfiles(){$('map').hidden=true;$('prof').hidden=false;const has=DB.list.length>0;
+ $('pList').innerHTML=DB.list.map(p=>'<button class="btn pl" data-id="'+p.id+'">👤 '+p.name.replace(/</g,'&lt;')+' <small>· '+LVN[p.lvl||2]+'</small></button>').join('');
+ $('pNew').hidden=!has;$('pForm').hidden=has;$('pHead').textContent=has?'ХТО ГРАЄ?':'ПОЗНАЙОМИМОСЬ';$('pErr').textContent=''}
+function bindProfiles(){
+ $('pList').addEventListener('click',e=>{const b=e.target.closest('.pl');if(!b)return;const pl=DB.list.find(p=>p.id===b.dataset.id);if(!pl)return;setPlayer(pl);$('prof').hidden=true;Sfx.click();showMap()});
+ $('pNew').addEventListener('click',()=>{$('pForm').hidden=false;$('pNew').hidden=true});
+ document.querySelectorAll('#pForm [data-sex]').forEach(b=>b.addEventListener('click',()=>{pForm.sex=b.dataset.sex;document.querySelectorAll('#pForm [data-sex]').forEach(x=>x.classList.toggle('sel',x===b))}));
+ document.querySelectorAll('#pForm [data-lvl]').forEach(b=>b.addEventListener('click',()=>{pForm.lvl=+b.dataset.lvl;document.querySelectorAll('#pForm [data-lvl]').forEach(x=>x.classList.toggle('sel',x===b))}));
+ $('pGo').addEventListener('click',()=>{const name=$('pName').value.trim().replace(/\s+/g,' ');const age=+$('pAge').value;
+  if(name.length<2){$('pErr').textContent='Напиши своє ім’я.';return}if(!(age>=5&&age<=99)){$('pErr').textContent='Вкажи вік (числом).';return}if(!pForm.sex){$('pErr').textContent='Обери: хлопець чи дівчина.';return}if(!pForm.lvl){$('pErr').textContent='Обери, наскільки ти впевнений(а) у фізиці.';return}
+  let old={};if(!DB.list.length){try{old=JSON.parse(localStorage.getItem('fz3'))||{}}catch(e){}}
+  const pl={id:'p'+Date.now(),name,age,sex:pForm.sex,lvl:pForm.lvl,P:old};DB.list.push(pl);setPlayer(pl);$('prof').hidden=true;Sfx.click();showMap()});
+ $('bWho').addEventListener('click',()=>{Voice.stop();showProfiles()})}
+
 function showMap(){Music.play('park');RUN++;skipRes&&skipRes('abort');Voice.stop();G.mode='map';G.holoK=0;G.beat='';$('ctl').classList.add('hide');$('hint').hidden=true;$('sub').hidden=true;$('play').hidden=true;$('endcard').hidden=true;$('task').hidden=true;
  $('mapList').innerHTML=ZONES.map(z=>{const p=P[z.id];return '<button class="zc" data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+z.id+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>'+(p?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
- const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent='Загалом досвіду: '+tot+' XP';$('map').hidden=false}
+ const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent=(CUR.name?'Гравець: '+CUR.name+' · рівень: '+LVN[CUR.lvl||2]+' · ':'')+'Загалом досвіду: '+tot+' XP';$('map').hidden=false}
 async function startZone(id){Z=ZONES.find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+Z.id+'</b><span>'+Z.par+' · '+Z.name+'</span>';
  Object.assign(G,{mode:'intro',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:false,Tmin:99,Tmax:0,unlocked:false,cutDone:false,T:10,Ttarget:10,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
@@ -72,7 +97,7 @@ async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout((
  $('endTag').textContent='Отримано деталь Ядра: «'+Z.gem+'»';
  $('endStat').innerHTML='Досвід: <b>+'+G.xp+' XP</b> · зірки за задачі: <b>'+G.stars+'/'+Tasks.max()+'</b><br>іскри: <b>'+G.sparks+'/'+SPARKS.length+'</b> (бонус <b>+'+G.bonus+' XP</b>'+(G.sparks>=SPARKS.length?', усі зібрано!':'')+')';
  $('bNext').hidden=!ZONES.find(z=>z.id===Z.id+1);$('endcard').hidden=false}
-$('bPlay').addEventListener('click',startGame);$('verTxt').textContent=GAME_VER;$('bAbout').addEventListener('click',()=>{$('about').hidden=false});$('bAboutX').addEventListener('click',()=>{$('about').hidden=true});
+bindProfiles();$('bPlay').addEventListener('click',startGame);$('verTxt').textContent=GAME_VER;$('bAbout').addEventListener('click',()=>{$('about').hidden=false});$('bAboutX').addEventListener('click',()=>{$('about').hidden=true});
 $('mapList').addEventListener('click',e=>{const b=e.target.closest('.zc');if(b&&!b.disabled){Sfx.click();startZone(+b.dataset.z)}});
 $('bMap').addEventListener('click',()=>{Sfx.click();showMap()});$('bMap2').addEventListener('click',()=>{Sfx.click();showMap()});
 $('bNext').addEventListener('click',()=>{Sfx.click();startZone(Z.id+1)});
