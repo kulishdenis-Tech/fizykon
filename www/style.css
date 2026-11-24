@@ -298,3 +298,4 @@ summary{cursor:pointer;font-weight:700}
 .sr{min-height:48px}.sr input[type=checkbox]{width:30px;height:30px;accent-color:#5df2ff}
 .sr .seg .btn{min-height:48px}
 .mapbtns .btn{min-height:48px}@media (max-height:600px) and (min-aspect-ratio:1/1){.mapbtns{gap:4px;flex-wrap:nowrap}.mapbtns .btn{padding:2px 5px;font-size:12px;min-height:48px;white-space:nowrap}}
+@media (max-height:520px){#task .btn[data-a=fchk],#task .btn[data-a=cchk]{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}}

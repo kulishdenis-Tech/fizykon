@@ -33,7 +33,7 @@ const Labs={
  /* Лабораторна №3: коливання маятника — від чого залежить період */
  pendulum(host,done){
   let errs=0,L=.5,M=100,A=15,ph0=Math.random()*TAU,t0=performance.now(),run=null,res=null,log=[];
-  const Tof=l=>2*Math.PI*Math.sqrt(l/9.81);
+  const Tof=l=>2*Math.PI*Math.sqrt(l/9.8);
   const sel=(id,arr,cur,u)=>'<div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap"><span class="conv" style="min-width:86px">'+id+'</span>'+arr.map(v=>'<button class="btn ghost pb" data-p="'+id+'" data-v="'+v+'">'+v+' '+u+'</button>').join('')+'</div>';
   host.innerHTML='<div class="lab"><svg id="pvg" viewBox="0 0 360 300"><rect x="90" y="18" width="180" height="10" rx="4" fill="#6b7bb8"/><line id="pth" x1="180" y1="28" x2="180" y2="200" stroke="#cfe6ff" stroke-width="2"/><circle id="pbob" r="16" fill="#ffd166" stroke="#fff" stroke-width="2"/><text id="plab" x="180" y="290" fill="#9db0d8" font-size="14" text-anchor="middle"></text></svg>'+
   '<div class="labside">'+sel('Довжина',[.25,.5,1],L,'м')+sel('Маса',[50,100,200],M,'г')+sel('Амплітуда',[5,15,30],A,'°')+
@@ -53,7 +53,7 @@ const Labs={
    if(run.N<5){errs++;Sfx.bad();return msg('Замало коливань: порахуй хоча б 5 повних (туди й назад).','bad')}
    res={N:run.N,t:run.t,L,M,A};$q('#pRes').innerHTML='Виміряно: N = <b>'+res.N+'</b>, t = <b>'+fmt(res.t,1)+' с</b>. Знайди період.';$q('#pForm').hidden=false};
   const renderLog=()=>{$q('#pLog').innerHTML=log.length?'<b>Журнал:</b> '+log.map(r=>'l='+r.L+' м, m='+r.M+' г, A='+r.A+'° → T='+fmt(r.T,2)+' с').join(' · '):''};
-  $q('#pChk').onclick=()=>{if(!res)return;const v=parseNum($q('#pTin').value),e=res.t/res.N;if(isNaN(v)||!near(v,e,.04)){errs++;Sfx.bad();return msg('T = t / N: час ділимо на кількість повних коливань ('+res.N+').','bad')}
+  $q('#pChk').onclick=()=>{if(!res)return msg('Спершу виміряй: натисни «Старт», порахуй коливання, потім «Стоп».','');const v=parseNum($q('#pTin').value),e=res.t/res.N;if(isNaN(v)||!near(v,e,.04)){errs++;Sfx.bad();return msg('T = t / N: час ділимо на кількість повних коливань ('+res.N+').','bad')}
    if(Math.abs(e-Tof(res.L))/Tof(res.L)>.1){errs++;Sfx.bad();res=null;$q('#pForm').hidden=true;return msg('Рахунок вірний, але вимірювання неточне (спізнився з Старт/Стоп). Повтори.','bad')}
    log.push({L:res.L,M:res.M,A:res.A,T:e});res=null;$q('#pForm').hidden=true;$q('#pTin').value='';Sfx.ok();renderLog();
    const dl=new Set(log.map(r=>r.L)).size>1,dm=new Set(log.map(r=>r.M)).size>1,da=new Set(log.map(r=>r.A)).size>1;
