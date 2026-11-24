@@ -218,5 +218,8 @@ summary{cursor:pointer;font-weight:700}
 #chTabs{flex-wrap:wrap;justify-content:center}#chTabs .btn{padding:6px 12px;font-size:14px}
 #chImg{display:none}
 @media print{body.printing>*:not(#chImg){display:none!important}body.printing{background:#fff}
- img#chImg{display:block!important;width:100%;height:auto;position:static}@page{size:A4;margin:0}}
+ #chImg{display:block!important}#chImg img{display:block;width:100%;height:auto;page-break-after:always}@page{size:A4;margin:0}}
 #cheat .logo.sm,#theory .logo.sm{margin-bottom:10px}
+.labic{font-size:96px;text-align:center;background:rgba(5,10,28,.6);border:1px solid var(--line);border-radius:16px;padding:20px 0}
+#chView{max-height:42vh}#chTabs{max-height:84px;overflow:auto}
+#thList{z-index:44;background:#070b22}#thList .zl{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:10px 0;text-align:left}#thList .zl button{text-align:left;padding:8px 10px;font-size:14px}

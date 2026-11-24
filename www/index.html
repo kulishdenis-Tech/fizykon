@@ -48,7 +48,7 @@
    <label class="sr"><span>Гучність звуків</span><input type="range" id="sSfx" min="0" max="1" step="0.05"><b id="sSfxV"></b></label>
   </div>
   <div class="row"><button class="btn ghost" id="sTest">▶ Послухати голос</button><button class="btn ghost" id="sReset">Скинути</button></div>
-  <div class="sabout"><p><b>Фізикон</b> — навчальна гра за шкільними підручниками. Зараз: фізика 7 клас («Ранок»). Математика 5 клас — скоро. Зроблено для Макса.</p>
+  <div class="sabout"><p><b>Фізикон</b> — навчальна гра за шкільними підручниками. Зараз: фізика 7 клас («Ранок»), увесь підручник. Математика 5 клас — скоро. Зроблено для Макса.</p>
   <p class="note2">Версія: <b id="verTxt"></b></p></div>
   <button class="btn" id="sClose">Закрити</button></div></div>
 <div id="rot">↻ Поверни телефон горизонтально — гра на весь екран, набагато зручніше</div>
@@ -66,7 +66,7 @@
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bCheat">📝 Шпаргалки</button> <button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bThAll">📖 Уся теорія</button> <button class="btn ghost" id="bCheat">📝 Шпаргалки</button> <button class="btn ghost" id="bCourse">📚 Клас і предмет</button> <button class="btn ghost" id="bSet2">⚙ Налаштування</button> <button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
 </div>
 
 <div id="course" class="ov" hidden><div class="mapbox"><div class="logo sm">КЛАС І ПРЕДМЕТ</div><div id="cList"></div><p class="note2">Прогрес і рейтинг ведуться окремо для кожного предмета.</p></div></div>
@@ -99,6 +99,7 @@
   <div class="thcard" id="thBody"></div><div class="thdots" id="thDots"></div>
   <div class="row"><button class="btn ghost" id="thPrev">◂ Назад</button><button class="btn" id="thNext">Далі ▸</button><button class="btn ghost" id="thClose">Закрити</button></div></div></div>
 
+<div id="thList" class="ov" hidden><div class="tbox wide"><div class="logo sm">ТЕОРІЯ</div><div class="zl" id="zlBody"></div><button class="btn" id="zlClose">Закрити</button></div></div>
 <div id="cheat" class="ov" hidden><div class="tbox wide"><div class="logo sm">ШПАРГАЛКИ</div>
   <div class="seg" id="chTabs"></div><div id="chView"></div>
   <div class="row"><button class="btn" id="chPdf">⬇ Зберегти PDF</button><button class="btn ghost" id="chPrint">🖨 Друк</button><button class="btn ghost" id="chClose">Закрити</button></div></div></div>
@@ -110,19 +111,23 @@
     <div class="tag" id="endTag"></div>
     <p class="note2" id="endStat"></p>
     <div class="row"><button class="btn" id="bNext">Наступна зона ▸</button><button class="btn ghost" id="bMap2">На карту</button><button class="btn ghost" id="bCartoon">Мультик ще раз</button></div>
-    <p class="note2">Готово: усі зони §12–17 і бос «Ядро Глітча».</p>
+    <p class="note2">Готово: усі зони підручника й бос «Ядро Глітча».</p>
   </div>
 </div>
 
 <script src="engine.js"></script>
 <script src="tasks.js"></script>
 <script src="labs.js"></script>
+<script src="labs3.js"></script>
 <script src="zones.js"></script>
 <script src="zones2.js"></script>
+<script src="zones3_base.js"></script>
+<script src="zones3.js"></script>
 <script src="levels.js"></script>
 <script src="courses.js"></script>
 <script src="main.js"></script>
 <script src="theory.js"></script>
+<script src="theory3.js"></script>
 <script src="cheat.js"></script>
 <script src="online.js"></script>
 <script src="rank.js"></script>

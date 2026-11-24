@@ -36,7 +36,7 @@ const THEORY={phys7:{
  {h:'Одиниці',b:'<ul><li>1 г/см³ = 1000 кг/м³</li><li>1 см³ = 0,000001 м³</li><li>1 дм³ = 1 л = 0,001 м³</li><li>1 г = 0,001 кг</li></ul>'},
  {h:'Типові густини, кг/м³',b:'<ul><li>вода 1000, лід 900</li><li>залізо ≈ 7800, мідь ≈ 8900</li><li>повітря ≈ 1,3</li></ul>'}],
  cheat:['ρ = m / V  (кг/м³)','m = ρ · V;  V = m / ρ','1 г/см³ = 1000 кг/м³','1 дм³ = 0,001 м³; 1 см³ = 0,000001 м³','1 г = 0,001 кг']},
-7:{par:'§12–17',title:'Усе разом',cards:[
+7:{par:'§1–36',title:'Усе разом',cards:[
  {h:'Рух по колу',b:'<p class="fm">T = t / N, n = N / t, v = 2πR / T</p>'},
  {h:'Коливання',b:'<p class="fm">T = t / N, ν = N / t, s = 4AN</p>'},
  {h:'Маса і густина',b:'<p class="fm">ρ = m / V, m = ρV, V = m / ρ</p><p class="fm">m₂ = m₁ · v₁ / v₂</p>'},
@@ -55,3 +55,8 @@ const Theory={i:0,z:null,
  prev(){if(this.i>0){this.i--;this.render()}},
  close(){$('theory').hidden=true}};
 $('thNext').onclick=()=>{Sfx.click();Theory.next()};$('thPrev').onclick=()=>{Sfx.click();Theory.prev()};$('thClose').onclick=()=>{Sfx.click();Theory.close()};
+
+$('bThAll').onclick=()=>{Sfx.click();const T=THEORY[CID]||{},keys=Object.keys(T).filter(k=>!T[k].extra).sort((a,b)=>{const l=ZL();return l.findIndex(z=>z.id==a)-l.findIndex(z=>z.id==b)}).concat(Object.keys(T).filter(k=>T[k].extra));
+ $('zlBody').innerHTML=keys.map(k=>'<button class="btn ghost" data-k="'+k+'">'+T[k].par+' · '+T[k].title+'</button>').join('');$('thList').hidden=false};
+$('zlBody').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;Sfx.click();const k=b.dataset.k;Theory.open(isNaN(+k)?k:+k,'list')});
+$('zlClose').onclick=()=>{Sfx.click();$('thList').hidden=true};
