@@ -22,14 +22,28 @@ const Sfx={ctx:null,master:null,musicOn:true,sfxOn:true,timer:null,n:0,
  click(){this.tone(600,.05,'square',.05)},
  whoosh(){this.tone(180,.6,'sawtooth',.05,900)},
  step(){this.tone(90+Math.random()*30,.05,'triangle',.05)},
- startMusic(){ if(!this.ctx||this.timer)return; const bass=[110,87.3,130.8,98],chords=[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]];
-  this.timer=setInterval(()=>{ if(!this.musicOn||!this.ctx)return; const bar=Math.floor(this.n/8)%4,i=this.n%8; const ch=chords[bar]; if(i===0){this.mus(bass[bar],2.3,'sine',.11)} this.mus(ch[[0,1,2,1,0,2,1,2][i]]*2,.34,'triangle',.045); this.n++ },300)},
+ startMusic(){Music.start('park')},
  mus(f,d,type,v){ const c=this.ctx,t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+d+.05)}
 };
-const Voice={on:true,voice:null,
+const hashTxt=s=>{let x=5381;for(let i=0;i<s.length;i++)x=(Math.imul(x,33)^s.charCodeAt(i))>>>0;return x.toString(16).padStart(8,'0')};
+/* фонова музика: готові mp3-петлі (park / space) */
+const Music={el:{},cur:null,vol:.2,duck:false,started:false,
+ get(th){if(!this.el[th]){const a=new Audio('audio/music_'+th+'.mp3');a.loop=true;a.preload='auto';a.volume=0;this.el[th]=a}return this.el[th]},
+ start(th){this.started=true;this.play(th||this.cur||'park')},
+ play(th){if(!this.started)return;th=th==='space'?'space':'park';if(this.cur===th&&this.el[th]&&!this.el[th].paused)return;this.cur=th;Object.keys(this.el).forEach(k=>{if(k!==th)this.fade(this.el[k],0,true)});const a=this.get(th);if(Sfx.musicOn){const p=a.play();if(p&&p.catch)p.catch(()=>{})}this.fade(a,this.target())},
+ target(){return Sfx.musicOn?(this.duck?this.vol*.35:this.vol):0},
+ fade(a,to,pause){clearInterval(a._f);a._f=setInterval(()=>{const d=to-a.volume;if(Math.abs(d)<.012){a.volume=Math.max(0,Math.min(1,to));clearInterval(a._f);if(pause&&to===0)a.pause();return}a.volume=Math.max(0,Math.min(1,a.volume+Math.sign(d)*.012))},40)},
+ apply(){if(!this.started)return;const a=this.el[this.cur];if(!a)return;if(Sfx.musicOn){const p=a.play();if(p&&p.catch)p.catch(()=>{})}this.fade(a,this.target(),!Sfx.musicOn)},
+ setDuck(d){this.duck=d;const a=this.el[this.cur];if(a&&Sfx.musicOn)this.fade(a,this.target())}
+};
+document.addEventListener('visibilitychange',()=>{const a=Music.el[Music.cur];if(!a)return;if(document.hidden)a.pause();else if(Sfx.musicOn&&Music.started)a.play().catch(()=>{})});
+/* озвучка: записані mp3 (audio/<hash>.mp3), запасний варіант — голос пристрою */
+const Voice={on:true,voice:null,au:null,
  init(){ if(!('speechSynthesis' in window))return; const pick=()=>{const vs=speechSynthesis.getVoices();this.voice=vs.find(v=>/^uk/i.test(v.lang))||null}; pick(); try{speechSynthesis.onvoiceschanged=pick}catch(e){} },
- speak(text,who,done){ if(!this.on||!this.voice)return false; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.voice=this.voice;u.lang='uk-UA';u.pitch=who==='giro'?1.55:1.05;u.rate=who==='giro'?1.03:1; u.onend=u.onerror=()=>done(); speechSynthesis.speak(u); return true}catch(e){return false} },
- stop(){ try{speechSynthesis.cancel()}catch(e){} }
+ sys(text,who,done){ if(!this.voice){done();return false} try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.voice=this.voice;u.lang='uk-UA';u.pitch=who==='giro'?1.55:1.05;u.rate=who==='giro'?1.03:1; u.onend=u.onerror=()=>done(); speechSynthesis.speak(u); return true}catch(e){done();return false} },
+ speak(text,who,done){ if(!this.on)return false; this.stop(); let fin=false;const end=()=>{if(fin)return;fin=true;Music.setDuck(false);done()};
+  try{const a=new Audio('audio/'+hashTxt(text)+'.mp3');this.au=a;a.volume=1;a.onended=end;a.onerror=()=>{if(this.au===a){this.au=null;Music.setDuck(false);if(!this.sys(text,who,end))end()}};const p=a.play();Music.setDuck(true);if(p&&p.catch)p.catch(()=>{if(this.au===a){this.au=null;Music.setDuck(false);if(!this.sys(text,who,end))end()}});return true}catch(e){return this.sys(text,who,done)} },
+ stop(){ try{speechSynthesis.cancel()}catch(e){} if(this.au){const a=this.au;this.au=null;a.onended=a.onerror=null;try{a.pause()}catch(e){}} Music.setDuck(false) }
 };
 
 /* ---------- art ---------- */

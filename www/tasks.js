@@ -11,11 +11,11 @@ const Tasks=(()=>{
  const NAMES=['Дано / СІ','Формула','Підстановка','Калькулятор','Запис'];
  let S=null,idx=0,onAll=null,totals={xp:0,stars:0,done:0};
 
- function open(startIdx,cb){idx=startIdx||0;onAll=cb;$('task').hidden=false;begin()}
- function close(){$('task').hidden=true}
+ function open(startIdx,cb){idx=startIdx||0;onAll=cb;$('task').hidden=false;document.body.classList.add('intask');begin()}
+ function close(){$('task').hidden=true;document.body.classList.remove('intask')}
  function begin(){const m=LIST[idx];S={m,type:m.type||'calc',completed:false,qdone:false,labStarted:false,ci:0,step:1,errs:0,hints:0,msg:'',cls:'',expr:m.mode==='assist'?'':'',res:'',sel:null,slots:[],opts:shuffle((m.formulas||[]).map((f,i)=>i),idx+11),okF:false,sub:false,solved:false};
   S.slots=(m.tpl||[]).filter(x=>typeof x==='object').map(()=>null);
-  $('tbadge').textContent=m.title+'  ·  '+(idx+1)+'/'+LIST.length;$('tstory').innerHTML=m.story;render()}
+  $('tbadge').textContent=m.title+'  ·  '+(idx+1)+'/'+LIST.length;$('tprog').innerHTML=LIST.map((_,i)=>'<i class="'+(i<idx?'d':i===idx?'c':'')+'"></i>').join('');$('task').scrollTop=0;$('tstory').innerHTML=m.story;render()}
  function steps(){ $('stp').innerHTML='<div class="steps">'+NAMES.map((n,i)=>'<div class="stp '+(i+1<S.step?'done':i+1===S.step?'cur':'')+'">'+(i+1)+'. '+n+'</div>').join('')+'</div>' }
  function gbar(click){const m=S.m;return '<div class="givenbar"><b>Дано (СІ):</b> '+m.given.map(q=>'<button class="gv" '+(click?'data-a="ins" data-v="'+q.si+'"':'disabled')+'>'+q.sym+' = '+esc(q.si)+(q.siUnit?' '+esc(q.siUnit):'')+'</button>').join('')+'<button class="gv" disabled>знайти: '+m.find.s+'</button>'+(click?'<span class="conv"> · тапни, щоб вставити число у вираз</span>':'')+'</div>'}
  function msg(){return '<div class="msg '+S.cls+'" id="msg">'+S.msg+'</div>'}

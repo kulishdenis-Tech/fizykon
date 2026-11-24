@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Фізикон 2.0: фізика 7 клас (зони §12–13)</title>
+<title>Фізикон 2.0: фізика 7 клас (§12–17 + бос)</title>
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -14,7 +14,7 @@
     <div id="hud">
       <div class="chip zone" id="zchip"><b>ФІЗИКОН</b><span>фізика, 7 клас</span></div>
       <div class="hudr">
-        <div class="chip" id="sparks"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l2.6 6.6L21 10l-5 4.4L17.5 21 12 17.6 6.5 21 8 14.4 3 10l6.4-1.4z" fill="#7df9ff"/></svg><b id="sparkN">0</b></div>
+        <div class="chip" id="sparks"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l2.6 6.6L21 10l-5 4.4L17.5 21 12 17.6 6.5 21 8 14.4 3 10l6.4-1.4z" fill="#7df9ff"/></svg><b id="sparkN">0</b><span class="sp-of">/16</span><span class="sp-l">іскри</span></div>
         <button class="chip btn-i" id="bMap" title="Карта зон"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z M9 4v14 M15 6v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button><button class="chip btn-i" id="bMusic" title="Музика"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7" cy="18" r="3" fill="currentColor"/><circle cx="17" cy="16" r="3" fill="currentColor"/></svg></button>
         <button class="chip btn-i" id="bVoice" title="Голос"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8c2 2 2 6 0 8M19 5c4 4 4 10 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
@@ -26,7 +26,7 @@
       <div class="prow"><button class="btn big" id="goTask" disabled>Покрути повзунок, щоб відкрити задачі</button></div>
     </div>
   </div>
-  <div id="ctl">
+  <div id="ctl" class="hide">
     <div class="pad"><button class="cb" id="bL" aria-label="вліво"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="cb" id="bR" aria-label="вправо"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
     <button class="cb jump" id="bJ" aria-label="стрибок"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
@@ -49,7 +49,7 @@
 
 <div id="task" class="ov" hidden>
   <div class="tin">
-    <div class="thead"><button class="btn ghost" id="tclose">← До гри</button><span class="pill" id="tbadge"></span></div>
+    <div class="thead"><button class="btn ghost" id="tclose">← До гри</button><span class="pill" id="tbadge"></span><span class="tprog" id="tprog"></span></div>
     <div class="story" id="tstory"></div>
     <div id="stp"></div>
     <div class="card" id="wb"></div>
@@ -63,7 +63,7 @@
     <div class="tag" id="endTag"></div>
     <p class="note2" id="endStat"></p>
     <div class="row"><button class="btn" id="bNext">Наступна зона ▸</button><button class="btn ghost" id="bMap2">На карту</button><button class="btn ghost" id="bCartoon">Мультик ще раз</button></div>
-    <p class="note2">Це демо: зараз готові зони §12 і §13, решта — у розробці.</p>
+    <p class="note2">Готово: усі зони §12–17 і бос «Ядро Глітча».</p>
   </div>
 </div>
 

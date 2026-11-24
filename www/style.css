@@ -122,3 +122,18 @@ summary{cursor:pointer;font-weight:700}
 .lab svg{width:100%;background:rgba(5,10,28,.6);border:1px solid var(--line);border-radius:16px}
 .labside .big{font-size:22px;margin:6px 0;font-weight:700}.labside .big b{font-family:ui-monospace,Menlo,monospace;color:var(--warn)}.labside .big span{color:var(--mute);font-weight:500}
 @media (max-width:640px){.lab{grid-template-columns:1fr}}
+
+/* ===== іскри в HUD ===== */
+#sparks b{font-size:1.9cqw;color:#7df9ff}.sp-of{color:var(--mute);font-size:1.3cqw;margin-left:-.4cqw}.sp-l{font-size:1.2cqw;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+/* ===== задачі: окремий повноекранний «зошит» ===== */
+#task.ov{--zc:#38bdf8;background:
+  linear-gradient(rgba(125,249,255,.035) 1px,transparent 1px) 0 0/34px 34px,
+  linear-gradient(90deg,rgba(125,249,255,.035) 1px,transparent 1px) 0 0/34px 34px,
+  radial-gradient(ellipse 90% 60% at 15% 0%,color-mix(in srgb,var(--zc) 26%,transparent),transparent 70%),#070a22;place-items:start center;padding:0;z-index:30}
+#task .tin{width:min(980px,100%);padding:0 16px 40px}
+#task .thead{position:sticky;top:0;z-index:2;margin:0 -16px 14px;padding:10px 16px;background:rgba(7,10,34,.92);backdrop-filter:blur(8px);border-bottom:2px solid var(--zc);flex-wrap:wrap}
+#task .pill{border-color:var(--zc);color:#fff;background:color-mix(in srgb,var(--zc) 18%,transparent);font-size:14px}
+.tprog{margin-left:auto;display:flex;gap:6px}.tprog i{width:26px;height:8px;border-radius:5px;background:rgba(255,255,255,.14)}.tprog i.d{background:var(--ok)}.tprog i.c{background:var(--zc);box-shadow:0 0 10px var(--zc)}
+#task .story{border-left-color:var(--zc);font-size:17px;background:rgba(255,255,255,.06)}
+#task .card{background:rgba(255,255,255,.05);border-color:color-mix(in srgb,var(--zc) 40%,transparent)}
+#task .tin{font-size:17px}#task .card{font-size:17px}#task input,#task select{font-size:17px}
