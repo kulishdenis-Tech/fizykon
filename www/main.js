@@ -30,6 +30,7 @@ const G={mode:'title',t:0,cam:0,camT:0,px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:
  holoK:0,holoTitle:'',beat:'',beatT0:0,spin0:0,arrived:false,Tmin:99,Tmax:0,xp:0,stars:0,unlocked:false,cutDone:false,giroX:300,giroY:380,giroMood:0,fx:[],pops:[],shake:0,hits:0};
 window.G=G;
 let SPARKS=[],BLOCKS=[],LASTSPARK=0,ENEM=[],BOSS=null;
+const STORY=['Ентропус зіпсував закон цієї зони. Його глітчі розсипаються, якщо наступити зверху.','Ентропус розсіяв Спідлінгів: вони завмирають і мигають перед ривком. Не стій на місці!','Глітчі Ентропуса вже знають твій маршрут. Тримай ритм і стрибай вчасно.','Ентропус посилає дронів-хаосу: вони літають і низько, і високо. Дивись угору!','Ентропус нервує: Ядро збирається докупи. Ще трохи, Максе!','Ентропус тікає в наступну зону, але його вороги ще тут. Не зупиняйся!'];
 const ENAME={walk:'Глітч',dash:'Спідлінг',fly:'Дрон-хаос',boss:'Міні-Ентропус'};
 function setLayout(zi,id){const R=rng(id*7919+13),L=window.LVL||2;SPARKS=[];let x=520;
  for(let i=0;i<16;i++){const h=[0,95,0,40,0,70][Math.floor(R()*6)];SPARKS.push({x:Math.round(x),y:FEET-70-h});x+=125+R()*45}
@@ -91,7 +92,7 @@ async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTh
  $('plabel').innerHTML=Z.play.label?Z.play.label.replace(/^(\S+)\s(.+)$/,'$1 <b>$2</b>'):'Період <b>T</b>';const sl=$('tslider');sl.min=Z.play.min;sl.max=Z.play.max;sl.step=Z.play.step;sl.value=Z.play.val;$('tval').textContent=Z.play.fmt(Z.play.val);
  Tasks.setList(Z.tasks.map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
  for(const l of Z.intro){await say(l[0],l[1],l[2]);if(tok!==RUN)return}
- $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй блоки · наступай на глітчів згори';tip('Ентропус зіпсував закон цієї зони. Його глітчі розсипаються, якщо наступити зверху.',5200);
+ $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй блоки · наступай на глітчів згори';tip(STORY[(ZL().findIndex(q=>q.id===Z.id))%STORY.length],5600);
 }
 function zoneLocked(zi){if(CUR.openAll||zi===0)return false;const L=ZL();for(let k=zi;k<L.length;k++){const q=P[L[k].id];if(q&&(q.max||q.part))return false}const pq=P[L[zi-1].id];return !(pq&&pq.max&&pq.stars>=1)}
 function resumeZone(id,fresh){Z=ZL().find(z=>z.id===id);++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
@@ -261,7 +262,7 @@ G.debug={teleport(x){G.px=x;G.cam=G.camT=clamp(x-420,0,CAMCUT)},skip(){skipRes&&
  const map=[['sRate','rate',v=>v.toFixed(2).replace(/0$/,'').replace(/\.$/,'')+'×'],['sVoice','voice',f],['sMusic','music',f],['sSfx','sfx',f]];
  const sync=()=>map.forEach(([id,k,fm])=>{$(id).value=S.v[k];$(id+'V').textContent=fm(S.v[k])});
  const open=()=>{Sfx.click();sync();syncP();$('settings').hidden=false};
- const syncP=()=>{document.querySelectorAll('#sLvl [data-l]').forEach(b=>b.classList.toggle('on',+b.dataset.l===(CUR.lvl||2)));$('sOpenAll').checked=!!CUR.openAll;$('sWho').textContent=CUR.name?'Гравець: '+CUR.name:''};
+ const syncP=()=>{document.querySelectorAll('#sLvl [data-l]').forEach(b=>b.classList.toggle('on',+b.dataset.l===(CUR.lvl||2)));$('sOpenAll').checked=!!CUR.openAll;$('sWho').textContent=CUR.name?'Гравець: '+CUR.name:'';{const b=CUR.best||{},t=Object.keys(ENAME).filter(k=>b[k]).map(k=>ENAME[k]+' ×'+b[k]);$('sBest').textContent=t.length?'Бестіарій: '+t.join(' · '):'Бестіарій порожній: переможи глітчів у забігах.'}};
  $('sLvl').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;CUR.lvl=+b.dataset.l;window.LVL=CUR.lvl;saveDB();syncP();Sfx.click()});
  $('sOpenAll').addEventListener('change',e=>{CUR.openAll=e.target.checked;saveDB()});
  $('sDel').addEventListener('click',()=>{if(!CUR.id||!confirm('Видалити профіль «'+CUR.name+'» разом з усім прогресом? Це не можна скасувати.'))return;DB.list=DB.list.filter(p=>p.id!==CUR.id);DB.cur=null;saveDB();$('settings').hidden=true;Voice.stop();showProfiles()});
