@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Фізикон — гра-підручник з фізики, 7 клас",
-  "scripts": { "sync": "cap sync android" },
+  "scripts": {
+    "sync": "cap sync android"
+  },
   "dependencies": {
     "@capacitor/android": "^6.1.2",
-    "@capacitor/core": "^6.1.2"
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/app": "^6.0.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

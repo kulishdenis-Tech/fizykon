@@ -273,3 +273,17 @@ G.debug={teleport(x){G.px=x;G.cam=G.camT=clamp(x-420,0,CAMCUT)},skip(){skipRes&&
  S.apply()})();
 
 $('tTheory').addEventListener('click',()=>{Sfx.click();if(Z)Theory.open(Z.id,'task')});
+
+/* ---------- кнопка «Назад» (Android) ---------- */
+(()=>{const vis=id=>{const e=$(id);return e&&!e.hidden};
+ function back(){
+  const chain=[['settings','sClose'],['theory','thClose'],['thList','zlClose'],['cheat','chClose'],['rank','rBack'],['task','tclose'],['endcard','bMap2']];
+  for(const [o,b] of chain){if(vis(o)&&$(b)){$(b).click();return true}}
+  if(vis('course')){showMap();return true}
+  if(vis('map')){if(CUR&&DB.list.length)return false;return false}
+  if(G.mode==='run'||G.mode==='intro'||G.mode==='auto'||G.mode==='play'){$('bMap').click();return true}
+  return false}
+ window.fzBack=back;
+ try{const A=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
+  if(A&&A.addListener)A.addListener('backButton',()=>{if(!back()){if(vis('map')){if(confirm('Вийти з гри?'))A.exitApp()}else A.exitApp()}})}catch(e){}
+})();
