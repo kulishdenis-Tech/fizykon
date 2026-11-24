@@ -60,9 +60,25 @@
 </div>
 
 <div id="map" class="ov" hidden>
-  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
+  <div class="mapbox"><div class="logo sm">КАРТА ЗОН</div><div id="mapList"></div><p class="note2" id="mapStat"></p><button class="btn ghost" id="bRank">🏆 Рейтинг</button> <button class="btn ghost" id="bWho">👤 Змінити гравця</button></div>
 </div>
 
+<div id="rank" class="ov" hidden><div class="tbox"><div class="logo sm">🏆 РЕЙТИНГ</div>
+  <div id="rJoin">
+   <p class="note2" style="margin-top:0">Змагайся з друзями! Твій <b>нік</b>, результат (XP і зірки) бачитимуть інші гравці. Нічого особистого не передається: ні імені, ні віку, ні телефону.</p>
+   <label>Нік (ім’я або прізвисько)<input id="rNick" maxlength="16" autocomplete="off" placeholder="Наприклад: Макс"></label>
+   <label>Код класу (необов’язково)<input id="rRoom" maxlength="12" autocomplete="off" placeholder="Домовтеся з друзями, напр. 7Б"></label>
+   <p class="note2">З кодом класу ви побачите таблицю лише своєї групи. Без коду — тільки загальну.</p>
+   <div class="row"><button class="btn big" id="rGo">Приєднатись</button><button class="btn ghost" id="rCancel" hidden>Скасувати</button><button class="btn ghost" id="rBack2">← На карту</button></div>
+   <button class="btn ghost" id="rLeave" hidden style="margin-top:8px">Вийти з рейтингу</button>
+  </div>
+  <div id="rBoard" hidden>
+   <p class="note2" id="rWho" style="margin-top:0"></p>
+   <div class="seg"><button class="btn ghost" id="rTabRoom">Мій клас</button><button class="btn ghost" id="rTabAll">Усі гравці</button></div>
+   <div id="rList"></div>
+   <div class="row"><button class="btn" id="rRefresh">↻ Оновити</button><button class="btn ghost" id="rEdit">Змінити нік / клас</button><button class="btn ghost" id="rBack">← На карту</button></div>
+  </div>
+  <p class="note2" id="rMsg" style="color:#ff9fb0"></p></div></div>
 <div id="task" class="ov" hidden>
   <div class="tin">
     <div class="thead"><button class="btn ghost" id="tclose">← До гри</button><span class="pill" id="tbadge"></span><span class="tprog" id="tprog"></span></div>
@@ -90,5 +106,7 @@
 <script src="zones2.js"></script>
 <script src="levels.js"></script>
 <script src="main.js"></script>
+<script src="online.js"></script>
+<script src="rank.js"></script>
 </body>
 </html>

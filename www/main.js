@@ -93,7 +93,7 @@ function openTasks(i){G.mode='task';$('play').hidden=true;Tasks.open(i,res=>{
  G.xp=res.xp;G.stars=res.stars;finish()})}
 async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout(()=>Sfx.ok(),400);
  const bonus=G.sparks*2+(G.sparks>=SPARKS.length?10:0);G.bonus=bonus;G.xp+=bonus;
- const old=P[Z.id]||{xp:0,stars:0};P[Z.id]={xp:Math.max(old.xp,G.xp),stars:Math.max(old.stars,G.stars),max:Tasks.max()};saveP();
+ const old=P[Z.id]||{xp:0,stars:0};P[Z.id]={xp:Math.max(old.xp,G.xp),stars:Math.max(old.stars,G.stars),max:Tasks.max()};saveP();window.Rank&&Rank.sync();
  $('endTag').textContent='Отримано деталь Ядра: «'+Z.gem+'»';
  $('endStat').innerHTML='Досвід: <b>+'+G.xp+' XP</b> · зірки за задачі: <b>'+G.stars+'/'+Tasks.max()+'</b><br>іскри: <b>'+G.sparks+'/'+SPARKS.length+'</b> (бонус <b>+'+G.bonus+' XP</b>'+(G.sparks>=SPARKS.length?', усі зібрано!':'')+')';
  $('bNext').hidden=!ZONES.find(z=>z.id===Z.id+1);$('endcard').hidden=false}

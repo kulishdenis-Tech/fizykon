@@ -172,3 +172,16 @@ summary{cursor:pointer;font-weight:700}
 #snav .skip{font-size:2.1cqw!important;padding:1cqw 2.2cqw!important;white-space:nowrap}
 #snav .skip#skip{padding:1.1cqw 3cqw!important}
 @media (max-aspect-ratio:1/1){#snav{bottom:1.5cqw!important;right:2cqw!important}#snav .skip{font-size:3.2cqw!important;padding:1.6cqw 3cqw!important}}
+
+/* ---- рейтинг ---- */
+#rank .tbox{max-width:560px;width:100%;text-align:center}
+#rank label{display:block;text-align:left;margin:8px 0;font-weight:700;font-size:14px}
+#rank input{width:100%;margin-top:4px;padding:10px 12px;font-size:16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);font-family:inherit}
+#rank .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+#rank .seg{display:flex;gap:8px;justify-content:center;margin:8px 0}
+#rank .seg .btn{flex:1;padding:8px}#rank .seg .btn.sel{background:linear-gradient(180deg,#7df9ff,#38bdf8);color:#05122b;border-color:transparent}
+#rList{margin:10px 0;max-height:46vh;overflow:auto;text-align:left}
+.rr{display:grid;grid-template-columns:34px 1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.06);margin-bottom:6px}
+.rr.me{background:rgba(125,249,255,.18);border:1px solid #7df9ff}
+.rr .rn{font-weight:800;text-align:center}.rr .rnick{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rr .rxp{font-weight:800;color:var(--ok)}.rr .rst{color:#ffd166;font-weight:700;min-width:48px;text-align:right}
+@media (max-height:520px){#rank .tbox{max-width:760px}#rList{max-height:34vh}#rank .note2{font-size:12px}}
