@@ -1,4 +1,4 @@
-const GAME_VER='2.8 (фінальний бос курсу)';
+const GAME_VER='2.9 (математика: Місто Фігур)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
