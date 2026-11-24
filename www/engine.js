@@ -1,4 +1,4 @@
-const GAME_VER='1.8 (озвучка v3: словник наголосів, кнопки)';
+const GAME_VER='1.10 (озвучка ElevenLabs: Nila і Vladyslav)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
