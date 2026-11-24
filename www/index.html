@@ -19,7 +19,7 @@
         <button class="chip btn-i" id="bVoice" title="Голос"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8c2 2 2 6 0 8M19 5c4 4 4 10 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
     </div>
-    <div id="sub" hidden><div class="who" id="subWho"></div><div class="txt" id="subTxt"></div><div class="srow"><button id="back" class="skip" hidden>◂ Назад</button><button id="replay" class="skip" hidden>↻ Ще раз</button><button id="skip" class="skip">Далі ▸</button></div></div>
+    <div id="sub" hidden><div class="who" id="subWho"></div><div class="txt" id="subTxt"></div></div><div id="snav" class="srow"><button id="back" class="skip" hidden>◂ Назад</button><button id="replay" class="skip" hidden>↻ Ще раз</button><button id="skip" class="skip">Далі ▸</button></div>
     <div id="hint" hidden></div>
     <div id="play" hidden>
       <div class="prow"><span id="plabel">Період <b>T</b></span><input type="range" id="tslider" min="0.5" max="8" step="0.1" value="4"><span id="tval">4,0 с</span></div>
@@ -30,7 +30,12 @@
     <div class="pad"><button class="cb" id="bL" aria-label="вліво"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="cb" id="bR" aria-label="вправо"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
     <button class="cb jump" id="bJ" aria-label="стрибок"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
-  <div id="rot">↻ Поверни телефон горизонтально — гра на весь екран, набагато зручніше</div>
+  <div id="about" class="ov" hidden><div class="tbox"><div class="logo sm">ПРО ГРУ</div>
+    <p><b>Фізикон</b> — навчальна гра з фізики, 7 клас (підручник «Ранок», §12–17).</p>
+    <p>Версія: <b id="verTxt"></b></p>
+    <p class="note2">Зони: Карусель, Космос, Маятниковий міст, Крижана арена, Пружинні візки, Скарбниця, Ядро Глітча. Зроблено для Макса.</p>
+    <button class="btn" id="bAboutX">Закрити</button></div></div>
+<div id="rot">↻ Поверни телефон горизонтально — гра на весь екран, набагато зручніше</div>
 </div>
 
 <div id="title" class="ov">
@@ -39,6 +44,7 @@
     <div class="tag">Макс і Ядро законів</div>
     <div class="zname">Фізика, 7 клас <small>(за підручником «Ранок»)</small></div>
     <button class="btn big pulse" id="bPlay">ГРАТИ</button>
+    <button class="btn ghost" id="bAbout" style="margin-top:10px">ℹ Про гру</button>
     <p class="note2">Звук і озвучка вмикаються після натискання. Найкраще — телефон горизонтально.</p>
   </div>
 </div>

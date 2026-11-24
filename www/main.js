@@ -31,7 +31,7 @@ const until=f=>new Promise(r=>{const i=setInterval(()=>{if(f()){clearInterval(i)
 $('skip').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('next')});$('back').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('back')});$('replay').addEventListener('click',e=>{e.stopPropagation();Sfx.click();skipRes&&skipRes('replay')});$('sub').addEventListener('click',()=>{skipRes&&skipRes()});
 
 /* ---------- flow ---------- */
-async function startGame(){Sfx.init();Voice.init();Sfx.startMusic();Sfx.click();$('title').hidden=true;showMap()}
+async function startGame(){Sfx.init();Voice.init();Voice.unlock();Sfx.startMusic();Sfx.click();$('title').hidden=true;showMap()}
 function showMap(){Music.play('park');RUN++;skipRes&&skipRes('abort');Voice.stop();G.mode='map';G.holoK=0;G.beat='';$('ctl').classList.add('hide');$('hint').hidden=true;$('sub').hidden=true;$('play').hidden=true;$('endcard').hidden=true;$('task').hidden=true;
  $('mapList').innerHTML=ZONES.map(z=>{const p=P[z.id];return '<button class="zc" data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+z.id+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>'+(p?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
  const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent='Загалом досвіду: '+tot+' XP';$('map').hidden=false}
@@ -72,7 +72,7 @@ async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout((
  $('endTag').textContent='Отримано деталь Ядра: «'+Z.gem+'»';
  $('endStat').innerHTML='Досвід: <b>+'+G.xp+' XP</b> · зірки за задачі: <b>'+G.stars+'/'+Tasks.max()+'</b><br>іскри: <b>'+G.sparks+'/'+SPARKS.length+'</b> (бонус <b>+'+G.bonus+' XP</b>'+(G.sparks>=SPARKS.length?', усі зібрано!':'')+')';
  $('bNext').hidden=!ZONES.find(z=>z.id===Z.id+1);$('endcard').hidden=false}
-$('bPlay').addEventListener('click',startGame);
+$('bPlay').addEventListener('click',startGame);$('verTxt').textContent=GAME_VER;$('bAbout').addEventListener('click',()=>{$('about').hidden=false});$('bAboutX').addEventListener('click',()=>{$('about').hidden=true});
 $('mapList').addEventListener('click',e=>{const b=e.target.closest('.zc');if(b&&!b.disabled){Sfx.click();startZone(+b.dataset.z)}});
 $('bMap').addEventListener('click',()=>{Sfx.click();showMap()});$('bMap2').addEventListener('click',()=>{Sfx.click();showMap()});
 $('bNext').addEventListener('click',()=>{Sfx.click();startZone(Z.id+1)});

@@ -1,3 +1,4 @@
+const GAME_VER='1.4 (озвучка, нова музика)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
@@ -42,7 +43,9 @@ const Voice={on:true,voice:null,au:null,
  init(){ if(!('speechSynthesis' in window))return; const pick=()=>{const vs=speechSynthesis.getVoices();this.voice=vs.find(v=>/^uk/i.test(v.lang))||null}; pick(); try{speechSynthesis.onvoiceschanged=pick}catch(e){} },
  sys(text,who,done){ if(!this.voice){done();return false} try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.voice=this.voice;u.lang='uk-UA';u.pitch=who==='giro'?1.55:1.05;u.rate=who==='giro'?1.03:1; u.onend=u.onerror=()=>done(); speechSynthesis.speak(u); return true}catch(e){done();return false} },
  speak(text,who,done){ if(!this.on)return false; this.stop(); let fin=false;const end=()=>{if(fin)return;fin=true;Music.setDuck(false);done()};
-  try{const a=new Audio('audio/'+hashTxt(text)+'.mp3');this.au=a;a.volume=1;a.onended=end;a.onerror=()=>{if(this.au===a){this.au=null;Music.setDuck(false);if(!this.sys(text,who,end))end()}};const p=a.play();Music.setDuck(true);if(p&&p.catch)p.catch(()=>{if(this.au===a){this.au=null;Music.setDuck(false);if(!this.sys(text,who,end))end()}});return true}catch(e){return this.sys(text,who,done)} },
+  try{const a=this.el();this.au=a;a.onended=end;a.onerror=()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}};a.src='audio/'+hashTxt(text)+'.mp3';a.volume=1;const p=a.play();Music.setDuck(true);if(p&&p.catch)p.catch(()=>{if(this.au===a){Music.setDuck(false);if(!this.sys(text,who,end))end()}});return true}catch(e){return this.sys(text,who,done)} },
+ el(){if(!this._a)this._a=new Audio();return this._a},
+ unlock(){try{const a=this.el();a.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';const p=a.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}},
  stop(){ try{speechSynthesis.cancel()}catch(e){} if(this.au){const a=this.au;this.au=null;a.onended=a.onerror=null;try{a.pause()}catch(e){}} Music.setDuck(false) }
 };
 
