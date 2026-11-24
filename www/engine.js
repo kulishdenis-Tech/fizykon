@@ -1,4 +1,4 @@
-const GAME_VER='1.5 (профілі, озвучка v2)';
+const GAME_VER='1.6 (рівні складності: варіанти задач)';
 'use strict';
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
