@@ -8,7 +8,9 @@ function voc(n){n=(n||'').trim();if(!n)return 'друже';const l=n.slice(-1).t
 const fillName=t=>String(t).replace(/\{n\}/g,voc(CUR.name||''));
 let Z=COURSES[0].zones[0],RUN=0;let CID='phys7';
 const COURSE=()=>COURSES.find(c=>c.id===CID)||COURSES[0];
-const ZL=()=>COURSE().zones;const NEXTZ=()=>{if(Z&&Z.boss)return null;const l=ZL(),i=l.findIndex(z=>z.id===Z.id);return l[i+1]||null};
+const ZL=()=>COURSE().zones;
+const ZT=z=>{if(z.boss)return z.tasks;const ex=(typeof EXTRA!=='undefined'&&EXTRA[CID]&&EXTRA[CID][z.id])||[],L=window.LVL||2,b=z.tasks.slice(),pick=ex.filter(t=>!t.lv||t.lv===L);const last=b[b.length-1];if(last&&last.type==='lab'){b.pop();return b.concat(pick,[last])}return b.concat(pick)};
+const NEXTZ=()=>{if(Z&&Z.boss)return null;const l=ZL(),i=l.findIndex(z=>z.id===Z.id);return l[i+1]||null};
 const DB=(()=>{try{return JSON.parse(localStorage.getItem('fz4'))||{cur:null,list:[]}}catch(e){return {cur:null,list:[]}}})();
 /* міграція збережень: v5 — без віку й статі; резервна копія перед змінами */
 (function migrate(){try{if((DB.v||4)>=5)return;const raw=localStorage.getItem('fz4');if(raw){try{localStorage.setItem('fz4_bak_4',raw)}catch(e){}}(DB.list||[]).forEach(p=>{delete p.age;delete p.sex});DB.v=5;localStorage.setItem('fz4',JSON.stringify(DB))}catch(e){}})();
@@ -82,7 +84,7 @@ function bindProfiles(){
  $('bWho').addEventListener('click',()=>{Voice.stop();showProfiles()})}
 
 function showMap(){Music.play('park');RUN++;G.sparks=0;sparkHud();skipRes&&skipRes('abort');Voice.stop();G.mode='map';G.holoK=0;G.beat='';$('ctl').classList.add('hide');$('hint').hidden=true;$('sub').hidden=true;$('play').hidden=true;$('endcard').hidden=true;$('task').hidden=true;
- $('mapList').innerHTML=ZL().map((z,zi)=>{const p=P[z.id];const lk=zoneLocked(zi);return '<button class="zc'+(lk?' lock':'')+'"'+(lk?' disabled':'')+' data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+(zi+1)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small>'+(Theory.data(z.id)?'<span class="thb" data-th="'+z.id+'">📖 Теорія</span>':'')+(p&&p.part?'<span class="thb" data-res="'+z.id+'">▶ Продовжити задачі '+p.part.i+'/'+z.tasks.length+'</span>':'')+(!lk?'<span class="thb" data-tk="'+z.id+'">📝 Лише задачі</span>':'')+'<em>'+(lk?'🔒 пройди попередню зону (≥1★)':p&&p.max?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+(bossOpen()?'<button class="zc" data-boss="1" style="--c:#ff4d8d"><span class="zn">ФІНАЛ · '+ZL().length+' зон пройдено</span><b>⚔ Ентропус</b><small>'+Math.min(8,ZL().length)+' ударів: по завданню з різних зон курсу, щоразу нові.</small><em>у бій ▸</em></button>':'<button class="zc lock" disabled style="--c:#ff4d8d"><span class="zn">ФІНАЛ</span><b>⚔ Ентропус</b><small>Пройди всі зони курсу, щоб викликати фінального боса.</small><em>🔒 ще '+ZL().filter(z=>!(P[z.id]&&P[z.id].max&&P[z.id].stars>=1)).length+' зон</em></button>')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
+ $('mapList').innerHTML=ZL().map((z,zi)=>{const p=P[z.id];const lk=zoneLocked(zi);return '<button class="zc'+(lk?' lock':'')+'"'+(lk?' disabled':'')+' data-z="'+z.id+'" style="--c:'+z.color+'"><span class="zn">ЗОНА '+(zi+1)+' · '+z.par+' · '+ZT(z).length+' місій</span><b>'+z.name+'</b><small>'+z.blurb+'</small>'+(Theory.data(z.id)?'<span class="thb" data-th="'+z.id+'">📖 Теорія</span>':'')+(p&&p.part?'<span class="thb" data-res="'+z.id+'">▶ Продовжити задачі '+p.part.i+'/'+ZT(z).length+'</span>':'')+(!lk?'<span class="thb" data-tk="'+z.id+'">📝 Лише задачі</span>':'')+'<em>'+(lk?'🔒 пройди попередню зону (≥1★)':p&&p.max?'★ '+p.stars+'/'+(p.max||6)+' · '+p.xp+' XP ✓':'грати ▸')+'</em></button>'}).join('')+(bossOpen()?'<button class="zc" data-boss="1" style="--c:#ff4d8d"><span class="zn">ФІНАЛ · '+ZL().length+' зон пройдено</span><b>⚔ Ентропус</b><small>'+Math.min(8,ZL().length)+' ударів: по завданню з різних зон курсу, щоразу нові.</small><em>у бій ▸</em></button>':'<button class="zc lock" disabled style="--c:#ff4d8d"><span class="zn">ФІНАЛ</span><b>⚔ Ентропус</b><small>Пройди всі зони курсу, щоб викликати фінального боса.</small><em>🔒 ще '+ZL().filter(z=>!(P[z.id]&&P[z.id].max&&P[z.id].stars>=1)).length+' зон</em></button>')+FUTURE.map(z=>'<button class="zc lock" disabled style="--c:'+z.color+'"><span class="zn">'+(z.id===7?'ФІНАЛ':'ЗОНА '+z.id)+' · '+z.par+'</span><b>'+z.name+'</b><small>'+z.blurb+'</small><em>скоро</em></button>').join('');
  const tot=Object.values(P).reduce((q,p)=>q+p.xp,0);$('mapStat').textContent=COURSE().subj+', '+COURSE().grade+' клас · '+(CUR.name?'Гравець: '+CUR.name+' · рівень: '+LVN[CUR.lvl||2]+' · ':'')+'Загалом досвіду: '+tot+' XP';$('map').hidden=false}
 async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+(ZL().findIndex(q=>q.id===Z.id)+1)+'</b><span>'+Z.par+' · '+Z.name+'</span>';
@@ -90,18 +92,18 @@ async function startZone(id){Z=ZL().find(z=>z.id===id);const tok=++RUN;Art.setTh
  Object.assign(G,{mode:'intro',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:false,Tmin:99,Tmax:0,unlocked:false,cutDone:false,T:10,Ttarget:10,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
  $('sparkN').textContent=0;$('ctl').classList.add('hide');$('hint').hidden=true;$('play').hidden=true;$('goTask').disabled=true;$('goTask').textContent='Покрути повзунок ↑';
  $('plabel').innerHTML=Z.play.label?Z.play.label.replace(/^(\S+)\s(.+)$/,'$1 <b>$2</b>'):'Період <b>T</b>';const sl=$('tslider');sl.min=Z.play.min;sl.max=Z.play.max;sl.step=Z.play.step;sl.value=Z.play.val;$('tval').textContent=Z.play.fmt(Z.play.val);
- Tasks.setList(Z.tasks.map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
+ Tasks.setList(ZT(Z).map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();
  for(const l of Z.intro){await say(l[0],l[1],l[2]);if(tok!==RUN)return}
  $('sub').hidden=true;G.mode='run';G.Ttarget=4.2;$('ctl').classList.remove('hide');$('hint').hidden=false;$('hint').textContent='▶ Біжи вправо · ✦ збирай іскри · ▲ перестрибуй блоки · наступай на глітчів згори';tip(STORY[(ZL().findIndex(q=>q.id===Z.id))%STORY.length],5600);
 }
 function zoneLocked(zi){if(CUR.openAll||zi===0)return false;const L=ZL();for(let k=zi;k<L.length;k++){const q=P[L[k].id];if(q&&(q.max||q.part))return false}const pq=P[L[zi-1].id];return !(pq&&pq.max&&pq.stars>=1)}
-function bossZone(){const L=ZL(),T=[];L.forEach(z=>{const c=z.tasks.filter(t=>t.type!=='lab');if(c.length)T.push(c[Math.floor(Math.random()*c.length)])});for(let i=T.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[T[i],T[j]]=[T[j],T[i]]}
+function bossZone(){const L=ZL(),T=[];L.forEach(z=>{const c=ZT(z).filter(t=>t.type!=='lab');if(c.length)T.push(c[Math.floor(Math.random()*c.length)])});for(let i=T.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[T[i],T[j]]=[T[j],T[i]]}
  return Object.assign({},L[L.length-1],{id:'boss',boss:true,name:'Фінал: Ентропус',par:'Підсумок курсу',color:'#ff4d8d',gem:'Ядро законів',tasks:T.slice(0,8).map((t,i)=>Object.assign({},t,{title:'Удар '+(i+1)+' · '+(t.title||'').replace(/^Місія [\d.]+ · /,'')}))})}
 const bossOpen=()=>{const L=ZL();return CUR.openAll||L.every(z=>{const q=P[z.id];return q&&q.max&&q.stars>=1})};
 function resumeZone(id,fresh){Z=id==='boss'?bossZone():ZL().find(z=>z.id===id);++RUN;Art.setTheme(Z.theme);Music.play(Z.theme);document.documentElement.style.setProperty('--zc',Z.color);
  $('map').hidden=true;$('endcard').hidden=true;$('zchip').innerHTML='<b>ЗОНА '+(ZL().findIndex(q=>q.id===Z.id)+1)+'</b><span>'+Z.par+' · '+Z.name+'</span>';
  Object.assign(G,{mode:'task',px:200,y:0,vy:0,vx:0,face:1,ph:0,keys:{l:0,r:0},sparks:0,got:{},hurt:0,cam:0,camT:0,beat:'',holoK:0,arrived:true,Tmin:99,Tmax:0,unlocked:true,cutDone:true,T:4,Ttarget:4,giroMood:0,fx:[],val:Z.play.val,giroX:300,giroY:380});
- Tasks.setList(Z.tasks.map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();const pr=fresh?null:(P[Z.id]||{}).part;if(pr)Tasks.resume(pr);openTasks(pr?pr.i:0)}
+ Tasks.setList(ZT(Z).map(t=>t.given&&window.LVL!==2?LEVELS(t,window.LVL):t));Tasks.reset();const pr=fresh?null:(P[Z.id]||{}).part;if(pr)Tasks.resume(pr);openTasks(pr?pr.i:0)}
 async function runSteps(i,tok){const STEPS=Z.steps;
  while(i<STEPS.length){const s=STEPS[i];
   if(!s.keep){G.beat=s.beat;G.beatT0=G.t;G.spin0=G.spin;G.holoTitle=s.title;if(s.beat)Sfx.click()}
@@ -122,7 +124,7 @@ function setVal(v){v=parseFloat(v);G.val=v;G.Ttarget=Z.play.vis(v);G.Tmin=Math.m
 $('tslider').addEventListener('input',e=>{setVal(e.target.value);Sfx.click()});
 $('goTask').addEventListener('click',()=>{if($('goTask').disabled)return;skipRes&&skipRes();$('sub').hidden=true;openTasks(0)});
 function openTasks(i){G.mode='task';$('play').hidden=true;Tasks.open(i,(res,pr)=>{
- if(!res){if(pr&&pr.i<Z.tasks.length&&(pr.i>0||pr.t.done>0)){const o=P[Z.id]||(P[Z.id]={xp:0,stars:0});o.part=pr;saveP()}showMap();return}
+ if(!res){if(pr&&pr.i<ZT(Z).length&&(pr.i>0||pr.t.done>0)){const o=P[Z.id]||(P[Z.id]={xp:0,stars:0});o.part=pr;saveP()}showMap();return}
  G.xp=res.xp;G.stars=res.stars;finish()})}
 async function finish(){G.mode='end';$('play').hidden=true;Sfx.ok();setTimeout(()=>Sfx.ok(),400);
  const bonus=G.sparks*2+(G.sparks>=SPARKS.length?10:0)+(G.kills||0)*2+(BOSS&&!BOSS.alive?10:0);G.bonus=bonus;G.xp+=bonus;
