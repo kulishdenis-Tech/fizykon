@@ -25,7 +25,7 @@ const saveDB=()=>{try{localStorage.setItem('fz4',JSON.stringify(DB))}catch(e){}}
 function detachP(){if(CUR&&CUR.PP&&CUR.PP[CID]===P)CUR.PP[CID]=JSON.parse(JSON.stringify(P))}
 function loadP(){Object.keys(P).forEach(k=>delete P[k]);Object.assign(P,CUR.PP[CID]||{});CUR.PP[CID]=P}
 function setPlayer(pl){detachP();CUR=pl;DB.cur=pl.id;if(!pl.PP){pl.PP={phys7:pl.P||{}};delete pl.P}
- CID=(pl.course&&COURSES.some(c=>c.id===pl.course&&c.ready))?pl.course:'phys7';loadP();window.LVL=pl.lvl||2;saveDB()}
+ window.HERO=pl.hero||0;CID=(pl.course&&COURSES.some(c=>c.id===pl.course&&c.ready))?pl.course:'phys7';loadP();window.LVL=pl.lvl||2;saveDB()}
 function setCourse(cid){detachP();CID=cid;CUR.course=cid;loadP();saveDB()}
 function enterApp(pl){setPlayer(pl);$('prof').hidden=true;Sfx.click();pl.course?showMap():showCourses()}
 function showCourses(){Voice.stop();$('map').hidden=true;$('course').hidden=false;
@@ -82,11 +82,12 @@ function showProfiles(){$('map').hidden=true;$('prof').hidden=false;const has=DB
 function bindProfiles(){
  $('pList').addEventListener('click',e=>{const b=e.target.closest('.pl');if(!b)return;const pl=DB.list.find(p=>p.id===b.dataset.id);if(!pl)return;enterApp(pl)});
  $('pNew').addEventListener('click',()=>{$('pForm').hidden=false;$('pNew').hidden=true});
+ document.querySelectorAll('#pHero [data-hero]').forEach(b=>b.addEventListener('click',()=>{pForm.hero=+b.dataset.hero;document.querySelectorAll('#pHero [data-hero]').forEach(x=>x.classList.toggle('sel',x===b))}));
  document.querySelectorAll('#pForm [data-lvl]').forEach(b=>b.addEventListener('click',()=>{pForm.lvl=+b.dataset.lvl;document.querySelectorAll('#pForm [data-lvl]').forEach(x=>x.classList.toggle('sel',x===b))}));
  $('pGo').addEventListener('click',()=>{const name=$('pName').value.trim().replace(/\s+/g,' ');
   if(name.length<2){$('pErr').textContent='Напиши своє ім’я.';return}if(!pForm.lvl){$('pErr').textContent='Обери, наскільки ти впевнений(а) у фізиці.';return}
   let old={};if(!DB.list.length){try{old=JSON.parse(localStorage.getItem('fz3'))||{}}catch(e){}}
-  const pl={id:'p'+Date.now(),name,lvl:pForm.lvl,P:old};DB.list.push(pl);enterApp(pl)});
+  const pl={id:'p'+Date.now(),name,lvl:pForm.lvl,hero:pForm.hero||0,P:old};DB.list.push(pl);enterApp(pl)});
  $('bWho').addEventListener('click',()=>{Voice.stop();showProfiles()})}
 
 function showMap(){document.body.classList.add('onmap');document.body.classList.remove('inrun');Music.play('park');RUN++;G.sparks=0;sparkHud();skipRes&&skipRes('abort');Voice.stop();G.mode='map';G.holoK=0;G.beat='';$('ctl').classList.add('hide');$('hint').hidden=true;$('sub').hidden=true;$('play').hidden=true;$('endcard').hidden=true;$('task').hidden=true;

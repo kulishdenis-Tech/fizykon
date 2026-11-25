@@ -1,5 +1,7 @@
 const GAME_VER="3.7";
 'use strict';
+const HEROS=[['Гіро','#f2f6ff','#b5c4ef','#7f8fcf'],['Гіро-мінт','#f0fff6','#a8e6c4','#5fb88a'],['Гіро-сонце','#fff7ec','#ffd29a','#e0903f']];
+window.HERO=window.HERO||0;function HEROC(){const h=HEROS[window.HERO]||HEROS[0];return[[0,h[1]],[.6,h[2]],[1,h[3]]]}
 /* ---------- utils ---------- */
 const VW=1280,VH=720,GY=585,FEET=655,TAU=Math.PI*2;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -288,7 +290,7 @@ const Art={L:{},stars:[],flies:[],
   // arms
   c.fillStyle='#b9c6ee';c.beginPath();c.ellipse(-42,6+Math.sin(t*3)*3,9,13,.5,0,TAU);c.fill();c.beginPath();c.ellipse(42,6+Math.cos(t*3)*3,9,13,-.5,0,TAU);c.fill();
   // body
-  c.fillStyle=lg(c,-34,-36,34,40,[[0,'#f2f6ff'],[.6,'#b5c4ef'],[1,'#7f8fcf']]);c.beginPath();c.arc(0,0,38,0,TAU);c.fill();c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=2;c.stroke();
+  c.fillStyle=lg(c,-34,-36,34,40,HEROC());c.beginPath();c.arc(0,0,38,0,TAU);c.fill();c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=2;c.stroke();
   // visor
   c.fillStyle='#0a1238';rr(c,-30,-18,60,34,16);c.fill();c.strokeStyle='#38d6ff';c.lineWidth=2;c.stroke();
   const bl=(t%4)<.13,m=o.mood||0;c.fillStyle='#7df9ff';
