@@ -51,6 +51,57 @@ Object.assign(LABGEN,{
    reads:[{l:'Динамометр 1: F₁',v:F=>F,u:'Н',b:'🔍 Праворуч'},{l:'Динамометр 2: F₂',v:F2,u:'Н',b:'🔍 Ліворуч'}],
    asks:[{l:'R =',u:'Н',a:F=>F-F2,bad:'Сили протилежні: R = F₁ − F₂.'}],ok:F=>'R = '+F+' − '+F2+' = '+(F-F2)+' Н.'}}
 });
+
+const emo=(e,l,extra)=>svgT(200,150,'<text x="100" y="95" font-size="72" text-anchor="middle">'+e+'</text><text x="100" y="135" fill="#ffd166" font-size="15" text-anchor="middle" font-weight="700">'+l+'</text>'+(extra||''));
+Object.assign(LABGEN,{
+ v_ball(){const v=rpick([.3,.4,.5,.6]);
+  return{icon:'⚽',intro:'Кулька котиться жолобом. <b>Задай довжину жолоба повзунком</b>, виміряй шлях і час і знайди середню швидкість: весь шлях ділимо на весь час.',
+   ctl:{l:'Довжина жолоба',u:'м',min:.6,max:3,step:.6,val:1.8},
+   vis:l=>svgT(260,100,'<line x1="20" y1="70" x2="240" y2="70" stroke="#6b7bb8" stroke-width="5"/><line x1="'+(20+l/3*220)+'" y1="58" x2="'+(20+l/3*220)+'" y2="82" stroke="#ff4d8d" stroke-width="4"/><circle cx="34" cy="58" r="12" fill="#fff"/><text x="'+(20+l/6*220)+'" y="30" fill="#ffd166" font-size="15" text-anchor="middle" font-weight="700">l = '+String(l).replace('.',',')+' м</text>'),
+   reads:[{l:'Шлях l',v:l=>l,u:'м',b:'📏 Лінійка'},{l:'Час t',v:l=>+(l/v).toFixed(2),u:'с',b:'⏱ Секундомір'}],
+   asks:[{l:'v =',u:'м/с',a:()=>v,bad:'v = l / t: весь шлях поділи на весь час.'}],ok:l=>'v = '+String(l).replace('.',',')+' / '+String(+(l/v).toFixed(2)).replace('.',',')+' = '+String(v).replace('.',',')+' м/с.'}},
+ v_stick(){const m1=rpick([2,4]),v1=rpick([3,5]);
+  return{icon:'🛷',intro:'Візок m₁ наїжджає на нерухомий візок m₂ й зчіплюється з ним. <b>Задай масу другого візка повзунком</b> і знайди швидкість обох після зчеплення: m₁v₁ = (m₁ + m₂)v.',
+   ctl:{l:'Маса другого візка m₂',u:'кг',min:2,max:8,step:2,val:4},
+   vis:m2=>svgT(260,100,'<rect x="30" y="40" width="'+(20+m1*8)+'" height="30" rx="5" fill="#7df9ff"/><rect x="150" y="40" width="'+(20+m2*8)+'" height="30" rx="5" fill="#ff7bd5"/><circle cx="45" cy="76" r="6" fill="#222"/><circle cx="'+(40+m1*8)+'" cy="76" r="6" fill="#222"/><circle cx="165" cy="76" r="6" fill="#222"/><circle cx="'+(150+m2*8)+'" cy="76" r="6" fill="#222"/><text x="50" y="30" fill="#7df9ff" font-size="13" font-weight="700">m₁ = '+m1+' кг</text><text x="150" y="30" fill="#ff9ec2" font-size="13" font-weight="700">m₂ = '+m2+' кг</text>'),
+   reads:[{l:'m₁',v:m1,u:'кг',b:'⚖ Візок 1'},{l:'v₁',v:v1,u:'м/с',b:'⏱ Швидкість v₁'},{l:'m₂',v:m2=>m2,u:'кг',b:'⚖ Візок 2'}],
+   asks:[{l:'v =',u:'м/с',a:m2=>m1*v1/(m1+m2),bad:'v = m₁v₁ / (m₁ + m₂): маса після зчеплення — сума мас обох візків.'}],ok:m2=>'v = '+m1+'·'+v1+' / ('+m1+' + '+m2+') = '+String(+(m1*v1/(m1+m2)).toFixed(2)).replace('.',',')+' м/с.'}},
+ m_dyn(){const M=[.2,.3,.45,.6,.75,.9];
+  return{icon:'⚖️',intro:'Тіло висить на динамометрі в спокої. <b>Обери вантаж повзунком</b>, зніми показ динамометра (вага) і знайди масу (g = 10 Н/кг).',
+   ctl:{l:'Вантаж №',u:'',min:1,max:6,step:1,val:2},
+   vis:n=>emo('⚖️','вантаж № '+n),
+   reads:[{l:'Вага P',v:n=>+(M[n-1]*10).toFixed(2),u:'Н',b:'🔍 Динамометр'}],
+   asks:[{l:'m =',u:'кг',a:n=>M[n-1],bad:'m = P / g = P / 10.'}],ok:n=>'m = '+String(+(M[n-1]*10).toFixed(2)).replace('.',',')+' / 10 = '+String(M[n-1]).replace('.',',')+' кг.'}},
+ mu_slide(){const mu=rpick([.2,.25,.3,.4]);
+  return{icon:'🧱',intro:'Брусок рівномірно тягнуть по столу. <b>Додавай вантажі по 100 г повзунком</b> (брусок без вантажів — 200 г). Динамометр показує силу тертя. Знайди коефіцієнт тертя μ = F / P (g = 10 Н/кг).',
+   ctl:{l:'Вантажів по 100 г',u:'шт',min:0,max:4,step:1,val:1},
+   vis:n=>svgT(240,110,'<rect x="20" y="78" width="200" height="10" fill="#6b7bb8"/><rect x="80" y="50" width="70" height="28" rx="4" fill="#c98a4b"/>'+Array.from({length:n},(_,i)=>'<rect x="92" y="'+(40-i*10)+'" width="46" height="9" rx="2" fill="#ffd166" stroke="#fff"/>').join('')+'<line x1="150" y1="64" x2="205" y2="64" stroke="#7df9ff" stroke-width="4"/>'),
+   reads:[{l:'Вага бруска з вантажами P',v:n=>+((.2+.1*n)*10).toFixed(2),u:'Н',b:'🔍 Вага'},{l:'Сила тяги F',v:n=>+(mu*(.2+.1*n)*10).toFixed(3),u:'Н',b:'🔍 Сила тяги'}],
+   asks:[{l:'μ =',u:'',a:()=>mu,bad:'μ = F / P: силу тертя поділи на вагу.'}],ok:n=>'μ = '+String(+(mu*(.2+.1*n)*10).toFixed(3)).replace('.',',')+' / '+String(+((.2+.1*n)*10).toFixed(2)).replace('.',',')+' = '+String(mu).replace('.',',')+'.'}},
+ p_block(){const m=rpick([1.2,1.5,2.4,3]),F=[[20,10],[20,5],[10,5]];
+  return{icon:'🧱',intro:'Брусок має розміри 20 × 10 × 5 см. <b>Обери повзунком грань, якою він лежить</b>, і знайди тиск p = F / S, де F = mg (g = 10 Н/кг), S — площа цієї грані. Площу переведи в м².',
+   ctl:{l:'Грань №',u:'',min:1,max:3,step:1,val:1},
+   vis:n=>{const f=F[n-1],w=f[0]*4,h=f[1]*4;return svgT(220,130,'<rect x="20" y="108" width="180" height="8" fill="#6b7bb8"/><rect x="'+(110-w/2)+'" y="'+(108-h*(n===1?1:n===2?2:1.25))+'" width="'+w+'" height="'+h*(n===1?1:n===2?2:1.25)+'" rx="4" fill="#c98a4b" stroke="#fff"/><text x="110" y="20" fill="#ffd166" font-size="14" text-anchor="middle" font-weight="700">грань '+f[0]+' × '+f[1]+' см</text>')},
+   reads:[{l:'Маса m',v:m,u:'кг',b:'⚖ Маса'},{l:'Грань',v:n=>F[n-1][0]+' × '+F[n-1][1],u:'см',b:'📏 Розміри грані'}],
+   asks:[{l:'p =',u:'Па',a:n=>m*10/(F[n-1][0]*F[n-1][1]/10000),bad:'p = mg / S, де S у м² (1 см² = 0,0001 м²).'}],ok:n=>'p = '+String(m*10).replace('.',',')+' / '+String(F[n-1][0]*F[n-1][1]/10000).replace('.',',')+' = '+Math.round(m*10/(F[n-1][0]*F[n-1][1]/10000))+' Па.'}},
+ u_tube(){return{icon:'🧪',intro:'У U-подібній трубці зліва вода, справа олія (900 кг/м³). <b>Задай висоту стовпа води повзунком</b> і знайди висоту стовпа олії: ρ₁h₁ = ρ₂h₂. Відповідь — у см.',
+   ctl:{l:'Висота води h₁',u:'см',min:9,max:36,step:9,val:18},
+   vis:h=>svgT(200,170,'<path d="M50 20 v110 a50 20 0 0 0 100 0 v-110" fill="none" stroke="#cfe6ff" stroke-width="4"/><rect x="54" y="'+(130-h*2.6)+'" width="38" height="'+(h*2.6)+'" fill="#4aa8ff" fill-opacity=".6"/><rect x="108" y="'+(130-h*2.6*1000/900)+'" width="38" height="'+(h*2.6*1000/900)+'" fill="#e8c547" fill-opacity=".6"/><text x="100" y="160" fill="#ffd166" font-size="13" text-anchor="middle" font-weight="700">h₁ = '+h+' см</text>'),
+   reads:[{l:'ρ₁ (вода)',v:1000,u:'кг/м³',b:'🧪 Вода'},{l:'ρ₂ (олія)',v:900,u:'кг/м³',b:'🧪 Олія'},{l:'h₁',v:h=>h,u:'см',b:'📏 Висота води'}],
+   asks:[{l:'h₂ =',u:'см',a:h=>1000*h/900,bad:'h₂ = ρ₁h₁ / ρ₂: менша густина — вищий стовп.'}],ok:h=>'h₂ = 1000·'+h+' / 900 = '+String(+(1000*h/900).toFixed(1)).replace('.',',')+' см.'}},
+ archimedes(){const F=[.5,1,1.5,2];
+  return{icon:'⚓',intro:'Зважуємо тіло в повітрі й у воді. <b>Обери тіло повзунком</b>, зніми покази й знайди архімедову силу й об’єм тіла (ρ води 1000 кг/м³, g = 10 Н/кг).',
+   ctl:{l:'Тіло №',u:'',min:1,max:4,step:1,val:2},
+   vis:n=>emo('⚓','тіло № '+n),
+   reads:[{l:'Вага в повітрі P₁',v:n=>2+n+1,u:'Н',b:'🔍 У повітрі'},{l:'Вага у воді P₂',v:n=>2+n+1-F[n-1],u:'Н',b:'🔍 У воді'}],
+   asks:[{l:'F_A =',u:'Н',a:n=>F[n-1],bad:'F_A = P₁ − P₂.'},{l:'V =',u:'см³',a:n=>F[n-1]*100,bad:'V = F_A / (ρg) у м³, потім у см³ (× 1 000 000). Підказка: F_A · 100.'}],ok:n=>'F_A = '+String(F[n-1]).replace('.',',')+' Н, V = '+Math.round(F[n-1]*100)+' см³.'}},
+ float_lab(){const R=[.6,.8,.9,1.2,2.7,7.8],V=[10,20,25,50,20,10];
+  return{icon:'🛟',intro:'<b>Обери тіло повзунком</b>, виміряй його масу й об’єм, знайди густину й визнач, чи плаватиме воно у воді (1 г/см³).',
+   ctl:{l:'Тіло №',u:'',min:1,max:6,step:1,val:3},
+   vis:n=>emo('🛟','тіло № '+n),
+   reads:[{l:'Маса m',v:n=>+(R[n-1]*V[n-1]).toFixed(1),u:'г',b:'⚖ Маса'},{l:'Об’єм V',v:n=>V[n-1],u:'см³',b:'🧪 Об’єм'}],
+   asks:[{l:'ρ =',u:'г/см³',a:n=>R[n-1],bad:'ρ = m / V.'},{l:'Плаває? (1 — так, 0 — ні)',u:'',a:n=>R[n-1]<1?1:0,bad:'Плаває, якщо густина менша за густину води (1 г/см³).',exact:1}],ok:n=>'ρ = '+String(R[n-1]).replace('.',',')+' г/см³ — '+(R[n-1]<1?'плаватиме':'потоне')+'.'}}
+});
 Labs.gen=function(host,done,m){
  const G=LABGEN[m.labid]();let errs=0,seen={},X=G.ctl?G.ctl.val:null;const V=f=>typeof f==='function'?f(X):f;
  const visHtml=()=>G.vis?G.vis(X):'<div class="labic">'+G.icon+'</div>';
