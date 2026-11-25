@@ -28,6 +28,7 @@ const Cheat={sel:'all',cv:null,
   add('trailer\n<</Size '+tot+'/Root 1 0 R>>\nstartxref\n'+xr+'\n%%EOF');
   const u=new Uint8Array(len);let p=0;parts.forEach(s=>{for(let i=0;i<s.length;i++)u[p++]=s.charCodeAt(i)&255});return new Blob([u],{type:'application/pdf'})},
  async save(){const b=this.pdf(),nm='shpargalka-'+(CID||'x')+'-'+this.sel+'.pdf',f=new File([b],nm,{type:'application/pdf'});
+  {const Pl=window.Capacitor&&Capacitor.Plugins;if(Pl&&Pl.Filesystem&&Pl.Share){try{const d=await new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(',')[1]);fr.onerror=no;fr.readAsDataURL(b)});const w=await Pl.Filesystem.writeFile({path:nm,data:d,directory:'CACHE'});await Pl.Share.share({title:'Шпаргалка',url:w.uri});return}catch(e){if(/cancel/i.test(String(e&&e.message||e)))return}}}
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Шпаргалка'});return}}catch(e){if(e&&e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nm;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href)},4000)},
  print(){const box=document.createElement('div');box.id='chImg';this.pages.forEach(p=>{const im=document.createElement('img');im.src=p.toDataURL('image/png');box.appendChild(im)});document.body.appendChild(box);document.body.classList.add('printing');

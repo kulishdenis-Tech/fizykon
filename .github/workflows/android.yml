@@ -26,6 +26,8 @@ jobs:
           sed -i 's/<activity/<activity android:screenOrientation="sensorLandscape"/' "$M"
           S=android/app/src/main/res/values/styles.xml
           sed -i '0,/<item name="android:background">@null<\/item>/s##<item name="android:background">@null</item><item name="android:windowFullscreen">true</item><item name="android:windowBackground">@android:color/black</item><item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>#' "$S"
+      - name: Version from package.json
+        run: echo "APP_VER=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
       - name: Fixed signing key and versionCode
         run: |
           mkdir -p ~/.android && cp keystore/debug.keystore ~/.android/debug.keystore
@@ -37,7 +39,7 @@ jobs:
           s=s.replace("android {\n",blk,1);open(p,'w').write(s)
           PY
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
-          sed -i "s/versionName \"1.0\"/versionName \"1.${{ github.run_number }}\"/" android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"${{ env.APP_VER }}\"/" android/app/build.gradle
       - name: Sync web files
         run: npx cap sync android
       - name: Build debug APK
@@ -54,6 +56,6 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.${{ github.run_number }}
-          name: Фізикон v1.${{ github.run_number }}
+          tag_name: v${{ env.APP_VER }}-b${{ github.run_number }}
+          name: Фізикон ${{ env.APP_VER }} (збірка ${{ github.run_number }})
           files: android/app/build/outputs/apk/debug/app-debug.apk

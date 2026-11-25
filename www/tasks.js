@@ -12,17 +12,17 @@ const Tasks=(()=>{
  const shufR=a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
  const RULES={'хв':'1 хв = 60 с','год':'1 год = 3600 с','доба':'1 доба = 86 400 с','доби':'1 доба = 86 400 с','діб':'1 доба = 86 400 с','мс':'1 мс = 0,001 с','см':'1 см = 0,01 м','мм':'1 мм = 0,001 м','дм':'1 дм = 0,1 м','км':'1 км = 1000 м','млн км':'1 млн км = 1 000 000 000 м','г':'1 г = 0,001 кг','т':'1 т = 1000 кг','см²':'1 см² = 0,0001 м²','дм²':'1 дм² = 0,01 м²','см³':'1 см³ = 0,000001 м³','дм³':'1 дм³ = 0,001 м³','л':'1 л = 0,001 м³','кН':'1 кН = 1000 Н','кПа':'1 кПа = 1000 Па','км/год':'км/год ÷ 3,6 = м/с','г/см³':'1 г/см³ = 1000 кг/м³'};
  const nums=e=>(e.match(/\d+(?:[.,]\d+)?/g)||[]);
- const fnum=x=>String(+x.toFixed(6)).replace('.',',');
+ const fnum=x=>{const t=String(+x.toFixed(6)).split('.');t[0]=t[0].replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0');return t.join(',')};
  const blanks=(e,m)=>{const sis=m&&m.given?m.given.map(q=>String(q.si)):null;return e.replace(/\d+(?:[.,]\d+)?/g,x=>(!sis||sis.includes(x))?'▢':x).replace(/\(▢\)/g,'▢')};
- function mkRec(m){const f=m.find,rd=f.round>0?f.round:0,exact=Math.abs(+(+f.ans).toFixed(rd)-f.ans)<1e-9,ans=fnum(+(+f.ans).toFixed(rd)),u=f.unit,eq=exact?' = ':' ≈ ';
-  const given=m.given.map(q=>{if(q.val==='?'){const k=String(q.name).match(/([A-Za-zА-Яа-яΑ-ωρ₀-₉]+)\s*=\s*[^)]+/);return k?k[0].trim():q.sym+' = ?'}
+ function mkRec(m){const f=m.find,rd=f.round>0?f.round:0,raw=(()=>{const v=evalExpr(m.expr);return isNaN(v)?+f.ans:(f.si!=null&&f.mul?v*f.mul:v)})(),exact=Math.abs(+(+f.ans).toFixed(rd)-raw)<1e-9,ans=fnum(+(+f.ans).toFixed(rd)),u=f.unit,eq=exact?' = ':' ≈ ';
+  const given=m.given.map(q=>{if(q.val==='?'){const k=String(q.name).match(/([A-Za-zА-Яа-яΑ-ωρ₀-₉]+)\s*=\s*[^)]+/);if(k)return k[0].trim();const r=String(q.name).match(/ребро\s*([\d,]+\s*[а-яa-z]+)/i);return r?'a = '+r[1]:q.sym+' = ?'}
     const calc=q.conv&&q.conv!=='—'&&q.unit===q.siUnit&&/[+·−]/.test(q.conv);return q.sym+' = '+q.val+(q.unit?' '+q.unit:'')+(calc?' ('+q.conv.split(' = ')[0]+')':'')});
   const si=[],pre=[];m.given.forEach(q=>{if(!q.conv||q.conv==='—')return;if(q.unit===q.siUnit){if(/[+·−]/.test(q.conv))pre.push(q.sym+' = '+q.conv);return}
     const p=q.conv.split(' = ');
     if(p.length>=4&&!/\d/.test(p[0])){pre.push(p[0]+' = '+p[1]);si.push(p.slice(-2).join(' = '))}
     else if(p.length>=3&&/[+·−\/]/.test(p[0])){pre.push(q.sym+' = '+p[0]+' = '+p[1]);si.push(p.slice(-2).join(' = '))}
     else si.push(q.conv)});
-  const sol=f.s+' = '+m.expr.replace(/×/g,'·').replace(/÷/g,'/')+(f.si!=null?' = '+fnum(f.si)+' '+f.siUnit+' → '+ans+' '+u:eq+ans+' '+u);
+  const sol=f.s+' = '+m.expr.replace(/×/g,'·').replace(/÷/g,'/').replace(/\d{4,}/g,d=>d.replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0'))+(f.si!=null?' = '+fnum(f.si)+' '+f.siUnit+' → '+ans+' '+u:eq+ans+' '+u);
   const out=['Дано: '+given.join('; '),'Знайти: '+f.s+' — ?','СІ: '+(si.length?si.join('; '):'усе вже в СІ'),'Формула: '+m.formulas[0].t];
   if(pre.length)out.push('Підготовка: '+pre.join('; '));
   out.push('Розв’язання: '+sol,'Відповідь: '+f.s+eq+ans+' '+u);return out}
@@ -71,7 +71,7 @@ const Tasks=(()=>{
     if(S.e1===1)err('Перевір '+names+': це ще не СІ.');
     else if(S.e1===2)err('Правило: '+badi.map(q=>q.val==='?'?(/діаметр/.test(q.name)?'радіус = діаметр / 2, а потім у метри':'перевір значення '+q.sym):(RULES[q.unit]||('значення '+q.sym+' треба перевести в СІ'))).join('; ')+'.');
     else err('Переведення: '+badi.map(q=>q.conv!=='—'?q.conv:(q.name+' = '+q.si+' '+q.siUnit)).join('; ')+'.')}}
-  else if(a==='hint1'){S.hints++;S.h1++;const cv=m.given.filter(q=>q.conv!=='—');setMsg(!cv.length?'Усе вже в СІ — перепиши числа.':S.h1===1?'Правило: '+cv.map(q=>RULES[q.unit]||q.name+' → в СІ').join('; ')+'.':'Переведення: '+cv.map(q=>q.conv).join('; ')+'.','info')}
+  else if(a==='hint1'){S.hints++;S.h1++;const cv=m.given.filter(q=>q.conv!=='—');setMsg(!cv.length?'Усе вже в СІ — перепиши числа.':S.h1===1?'Правило: '+[].concat(cv.some(q=>/діаметр/.test(q.name))?['радіус = діаметр / 2']:[],cv.map(q=>RULES[q.unit]||(/діаметр/.test(q.name)?'':q.name+' → в СІ')).filter(Boolean)).join('; ')+'.':'Переведення: '+cv.map(q=>q.conv).join('; ')+'.','info')}
   else if(a==='f'){const i=+b.dataset.i;if(m.formulas[i].ok){S.okF=true;S.okI=i;Sfx.ok();S.msg=m.formulas[i].ok;S.cls='ok';render()}else err(m.formulas[i].no)}
   else if(a==='to3'){S.step=3;S.msg='';render()}
   else if(a==='chip'){S.sel=b.dataset.c;render()}
@@ -80,13 +80,13 @@ const Tasks=(()=>{
   else if(a==='to4'){S.step=4;S.expr='';S.res='';S.msg='';render()}
   else if(a==='key'){key(b.dataset.k)}
   else if(a==='ins'){[...b.dataset.v].forEach(ch=>key(ch))}
-  else if(a==='put'){const v=evalExpr(S.expr);if(isNaN(v)){setMsg('Спочатку склади вираз і натисни «=».','info');return}$('ain').value=fmt(v,m.find.round).replace('.',',');setMsg(m.find.si!=null?'Число вставлено — це ще '+m.find.siUnit+'. Переведи у '+m.find.unit+'.':'Число вставлено — обери одиницю й перевір.','info')}
-  else if(a==='hint4'){S.hints++;S.h4++;setMsg(S.h4===1?'Формула: '+m.formulas[0].t+'.':S.h4===2?'Підстановка: '+blanks(m.expr)+' — впиши числа з «Дано» (СІ).':'Вираз: '+m.expr,'info')}
+  else if(a==='put'){const v=evalExpr(S.expr);if(isNaN(v)){setMsg('Спочатку склади вираз і натисни «=».','info');return}$('ain').value=String(+v.toPrecision(4)).replace('.',',');setMsg(m.find.si!=null?'Число вставлено — це ще '+m.find.siUnit+'. Переведи у '+m.find.unit+'.':'Число вставлено — обери одиницю й перевір.','info')}
+  else if(a==='hint4'){S.hints++;S.h4++;setMsg(S.h4===1?'Формула: '+m.formulas[0].t+'.':S.h4===2?'Підстановка: '+blanks(m.expr,m)+' — впиши числа з «Дано» (СІ).':'Вираз: '+m.expr,'info')}
   else if(a==='chk4'){const v=parseNum($('ain').value),u=$('aun').value;if(!$('ain').value.trim())return setMsg('Спершу введи відповідь.','info');if(isNaN(v))return err('Введи відповідь числом (кому можна).');if(!u)return err('Обери одиницю вимірювання.');
    if(m.find.si!=null&&!near(v,m.find.ans)&&near(v,m.find.si)){return err('Це значення в '+m.find.siUnit+'. У задачі питають у '+m.find.unit+' — переведи: '+(m.find.mul>=1?'помнож на ':'поділи на ')+fnum(m.find.mul>=1?m.find.mul:+(1/m.find.mul).toFixed(3))+'.')}
    const alt=(m.find.alt||[]).find(a=>a.unit===u&&near(v,a.ans));
    if(!alt&&!near(v,m.find.ans))return err(diag(m,v));if(!alt&&u!==m.find.unit)return err('Число правильне, але одиниця не та. Тут шукаємо '+m.find.name+' — у '+m.find.unit+'.');
-   S.st=S.errs+S.hints===0?3:S.errs+S.hints<=2?2:1;S.gain=Math.round(m.xp*XM()*Math.max(.4,1-.15*S.errs-.1*S.hints));if(!S.completed){S.completed=true;totals.xp+=S.gain;totals.stars+=S.st;totals.done++;notify()}Sfx.ok();S.step=5;S.msg='';S.cls='';render()}
+   S.st=S.errs+S.hints===0?3:S.errs+S.hints<=2?2:1;S.gain=Math.round(m.xp*XM()*Math.max(.4,1-.15*S.errs-.1*S.hints));if(!S.completed){S.completed=true;totals.xp+=S.gain;totals.stars+=S.st;totals.done++;notify()}Sfx.ok();S.step=5;S.found=true;S.msg='';S.cls='';render()}
   else if(a==='fnd'){if(b.dataset.s===m.find.s){S.found=true;S.msg='';S.cls='';Sfx.ok();render()}else setMsg('Ні, «'+b.dataset.s+'» — це дано. Що в задачі питають?','info')}
   else if(a==='qo'){const i=+b.dataset.i,o=m.opts[i];if(o.ok){S.qdone=true;S.msg='';render()}else{S.bad=S.bad||{};S.bad[i]=1;err(o.why||'Не те. Спробуй ще.');render()}}
   else if(a==='fchk'){S.fv=m.rows.map((r,i)=>document.querySelector('[data-fi="'+i+'"]').value);if(S.fv.every(x=>!String(x).trim()))return setMsg('Спершу впиши відповіді.','info');let ok=true;m.rows.forEach((r,i)=>{const inp=document.querySelector('[data-fi="'+i+'"]'),v=parseNum(inp.value);const good=!isNaN(v)&&near(v,r.ans,.001);inp.className=good?'ok':'bad';if(!good)ok=false});if(ok){S.msg='Усе вірно!';S.cls='ok';complete();render()}else err('Є помилки в позначених рядках. '+m.hint)}

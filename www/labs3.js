@@ -26,7 +26,7 @@ Labs.gen=function(host,done,m){
  const $q=s=>host.querySelector(s),msg=(t,c)=>{$q('#gMsg').textContent=t;$q('#gMsg').className='msg '+(c||'')};
  const show=()=>{$q('#gRd').innerHTML=G.reads.map((r,i)=>seen[i]?'<span>'+r.l+' = <b>'+String(r.v).replace('.',',')+'</b> '+r.u+'</span>':'').filter(Boolean).join(' &nbsp; ')};
  host.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;Sfx.click();seen[b.dataset.r]=1;b.style.outline='2px solid #7df9ff';show()});
- $q('#gChk').onclick=()=>{if(Object.keys(seen).length<G.reads.length){Sfx.bad();return msg('Спершу зроби всі вимірювання.','bad')}
+ $q('#gChk').onclick=()=>{if(Object.keys(seen).length<G.reads.length){return msg('Спершу зроби всі вимірювання.','info')}
   for(let i=0;i<G.asks.length;i++){const q=G.asks[i],v=parseNum($q('[data-q="'+i+'"]').value);
    const okv=!isNaN(v)&&(q.exact?v===q.a:near(v,q.a,.04));if(!okv){errs++;Sfx.bad();return msg(q.bad,'bad')}}
   Sfx.ok();msg('Так! '+G.ok,'ok');setTimeout(()=>done(errs),1700)}};

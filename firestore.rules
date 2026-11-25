@@ -5,22 +5,22 @@ service cloud.firestore {
       return d.keys().hasOnly(['owner','nick','room','course','xp','stars','t'])
         && d.owner == request.auth.uid
         && d.nick is string && d.nick.size() >= 2 && d.nick.size() <= 16
-        && d.room is string && d.room.size() <= 12
+        && d.room is string && d.room.size() >= 3 && d.room.size() <= 12
         && d.course is string && d.course.size() >= 2 && d.course.size() <= 12
         && d.xp is int && d.xp >= 0 && d.xp <= 30000
         && d.stars is int && d.stars >= 0 && d.stars <= 500
         && d.t == request.time;
     }
     match /players/{id} {
-      allow read: if request.auth != null;
+      allow read: if request.auth != null && resource.data.room is string && resource.data.room.size() >= 3;
       allow create: if request.auth != null
         && id.matches(request.auth.uid + '_p[0-9]+_[a-z0-9]+')
         && okData(request.resource.data)
-        && request.resource.data.xp <= 5000;
+        && request.resource.data.xp <= 12000;
       allow update: if request.auth != null
         && resource.data.owner == request.auth.uid
         && okData(request.resource.data)
-        && request.resource.data.xp - resource.data.xp <= 700
+        && request.resource.data.xp - resource.data.xp <= 12000
         && request.time > resource.data.t + duration.value(10, 's');
       allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
     }

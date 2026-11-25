@@ -106,7 +106,7 @@ summary{cursor:pointer;font-weight:700}
 .shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
 #rot{display:none}
-@media (orientation:portrait){#rot{display:block;text-align:center;padding:14px 18px;color:var(--warn);background:#0a1030;font-weight:700;font-size:15px}}
+@media (orientation:portrait){body.inrun #rot{display:block;text-align:center;padding:14px 18px;color:var(--warn);background:#0a1030;font-weight:700;font-size:15px}}
 
 .givenbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:rgba(93,242,255,.07);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:6px 0 10px}.gv{background:rgba(139,123,255,.18);border:1px solid var(--vi);border-radius:10px;padding:5px 10px;font-family:ui-monospace,Menlo,monospace;font-weight:800;font-size:15px;color:var(--ink)}.gv[disabled]{opacity:.85;cursor:default}button.gv:not([disabled]){background:rgba(93,242,255,.2);border-color:var(--cy)}
 @media (min-width:760px){.s4{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}.r4 .ans{margin-top:0;margin-bottom:12px}}
@@ -300,3 +300,15 @@ summary{cursor:pointer;font-weight:700}
 .mapbtns .btn{min-height:48px}@media (max-height:600px) and (min-aspect-ratio:1/1){.mapbtns{gap:4px;flex-wrap:nowrap}.mapbtns .btn{padding:2px 5px;font-size:12px;min-height:48px;white-space:nowrap}}
 @media (max-height:520px){#task .btn[data-a=fchk],#task .btn[data-a=cchk]{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}}
 #hud{left:max(1.6cqw,env(safe-area-inset-left));right:max(1.6cqw,env(safe-area-inset-right));top:max(1.4cqw,env(safe-area-inset-top))}
+/* v3.7: тап-зони ≥44 і закріплені головні дії */
+#task .thead .btn.ghost,#task .thead .btn{min-height:44px;height:44px}
+.sr input[type=checkbox]{width:44px;height:44px}
+#pForm .seg .btn{min-height:44px}
+@media (max-height:520px){
+ #task .btn[data-a=to3],#task .btn[data-a=to4],#task .btn[data-a=next],#task .btn[data-a=chk1],#task .btn[data-a=chk4],#lChk,#pChk,#gChk,#bChk,#dChk{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}
+}
+/* карта: чипи забігу ховаємо, портрет налаштувань не ширший за екран */
+body.onmap #hud .chip{display:none!important}
+#settings,#settings *{max-width:100%}#settings .sr{flex-wrap:wrap}
+@media (max-height:520px){.labside{overflow-y:auto;max-height:calc(100dvh - 150px);padding-bottom:4px}#pStart,#pStop,#lStart,#lStop{position:sticky;bottom:4px;z-index:3}}
+@media (max-height:520px){.labside .row:has(#pStart),.labside .row:has(#lStart){position:sticky;bottom:0;z-index:3;background:var(--bg,#0b1030);padding:4px 0}}

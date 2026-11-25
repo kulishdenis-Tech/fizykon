@@ -43,11 +43,11 @@ const Rank=(()=>{
   if(!confirm('Вийти з рейтингу? Твій нік і результат буде видалено з таблиці.'))return;
   try{await Online.leave(CUR,COURSES.map(c=>c.id))}catch(e){msg(errText(e));return}
   CUR.online=null;saveDB();editing=false;render()}
- function sync(){const o=CUR&&CUR.online;if(!o||!o.on)return;const t=tot();Online.push(CUR,t.xp,t.st,CID).catch(()=>{})}
+ function sync(){const o=CUR&&CUR.online;if(!o||!o.on)return;const t=tot();Online.push(CUR,t.xp,t.st,CID).then(()=>{CUR.syncErr=0}).catch(e=>{CUR.syncErr=1;try{const m=$('rMsg');if(m){msg(errText(e)+' Натисни «Оновити», щоб повторити.')}}catch(x){}})}
  function bind(){
   $('bRank').addEventListener('click',open);$('rBack').addEventListener('click',()=>{Sfx.click();close()});$('rBack2').addEventListener('click',()=>{Sfx.click();close()});
   $('rGo').addEventListener('click',join);$('rLeave').addEventListener('click',leave);
-  $('rEdit').addEventListener('click',()=>{editing=true;render()});$('rRefresh').addEventListener('click',()=>{Sfx.click();load()});
+  $('rEdit').addEventListener('click',()=>{editing=true;render()});$('rRefresh').addEventListener('click',()=>{Sfx.click();if(CUR.syncErr)sync();load()});
   $('rTabRoom').addEventListener('click',()=>{tab='room';render()});$('rTabAll').addEventListener('click',()=>{tab='all';render()});
   $('rCancel').addEventListener('click',()=>{editing=false;render()})}
  bind();
