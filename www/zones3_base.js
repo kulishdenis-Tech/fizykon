@@ -32,7 +32,7 @@ const SC={
   [.25,.5,.75].forEach((k,i)=>arrow(c,HX-88,PY+222-180*(.4+h*.5)*k*1.0,30+i*22,0,'#ffd166'))},
  press2(c,bt,a,G){const s=Math.sin(a*1.1)*.5+.5;c.fillStyle='rgba(80,160,255,.5)';rr(c,PX+90,PY+170,PW-180,36,8);c.fill();c.fillStyle='rgba(80,160,255,.5)';c.fillRect(PX+110,PY+90,28,90);c.fillRect(PX+PW-190,PY+90,80,90);
   c.fillStyle='#c9d3e8';rr(c,PX+108,PY+80+s*30,32,12,3);c.fill();rr(c,PX+PW-192,PY+110-s*8,84,12,3);c.fill();arrow(c,PX+124,PY+40,0,36,'#ffd166');arrow(c,PX+PW-150,PY+84-s*8,0,-40,'#6ee7a8')},
- float(c,bt,a,G){const y=PY+120+Math.sin(a*1.3)*4;c.fillStyle='rgba(80,160,255,.45)';c.fillRect(PX+60,PY+120,PW-120,100);c.fillStyle='#c98a4b';rr(c,HX-34,y-20,68,60,8);c.fill();arrow(c,HX-10,y+50,0,-44,'#7df9ff');arrow(c,HX+10,y-8,0,44,'#ff9ec2');txt(c,'F арх',HX-52,y+30,15,'#7df9ff','right');txt(c,'F тяж',HX+50,y+30,15,'#ff9ec2','left')},
+ float(c,bt,a,G){const y=PY+120+Math.sin(a*1.3)*4;c.fillStyle='rgba(80,160,255,.45)';c.fillRect(PX+60,PY+120,PW-120,100);c.fillStyle='#c98a4b';rr(c,HX-34,y-20,68,60,8);c.fill();arrow(c,HX-10,y+50,0,-44,'#7df9ff');arrow(c,HX+10,y-8,0,44,'#ff9ec2');txt(c,'F_A',HX-52,y+30,15,'#7df9ff','right');txt(c,'F тяж',HX+50,y+30,15,'#ff9ec2','left')},
  balloon(c,bt,a,G){const y=PY+100-Math.sin(a*.8)*10,x=HX;c.fillStyle='#ff4d8d';c.beginPath();c.ellipse(x,y,48,60,0,0,TAU);c.fill();c.fillStyle='#ffd166';c.fillRect(x-14,y+70,28,18);c.strokeStyle='#cfe6ff';c.lineWidth=2;c.beginPath();c.moveTo(x-30,y+45);c.lineTo(x-12,y+70);c.moveTo(x+30,y+45);c.lineTo(x+12,y+70);c.stroke();arrow(c,x+70,y+40,0,-50,'#6ee7a8')}
 };
 /* універсальний мультик: сцена + рядки з тексту */
