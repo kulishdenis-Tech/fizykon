@@ -1,6 +1,6 @@
 'use strict';
 /* Онлайн-рейтинг: Firebase Anonymous Auth + Firestore через REST (без SDK).
-   Передається лише: нік, код класу, XP, зірки. Правила бази — в firestore.rules. */
+   Передається лише: нік, паралель (5–11, як «ПАР7»), XP, зірки. Правила бази — в firestore.rules. */
 const Online=(()=>{
  const KEY='AIzaSyDydAb_z4e8DveD9ssBTVTyHFbKecNWA38',PROJ='fizykon-8769a';
  const FS='https://firestore.googleapis.com/v1/projects/'+PROJ+'/databases/(default)/documents';
@@ -40,6 +40,8 @@ const Online=(()=>{
               :{from:[{collectionId:'players'}],where:{fieldFilter:{field:{fieldPath:'course'},op:'EQUAL',value:str(cid)}},limit:300};
   const r=await jf(FS+':runQuery',{method:'POST',headers:await hdr(),body:JSON.stringify({structuredQuery:q})});
   const l=parse(r).filter(x=>x.course===cid);l.sort((a,b)=>b.xp-a.xp||b.stars-a.stars);return l.slice(0,30)}
+ const GRADES=[5,6,7,8,9,10,11],roomOf=g=>'ПАР'+g;
+ async function topAll(cid){const rs=await Promise.all(GRADES.map(g=>top(roomOf(g),cid).catch(()=>[])));const l=[].concat(...rs);l.sort((a,b)=>b.xp-a.xp||b.stars-a.stars);return l.slice(0,30)}
  const myId=(pl,cid)=>S&&S.uid?S.uid+'_'+pl.id+'_'+cid:null;
- return{push,leave,top,clean,normRoom,myId,token,get uid(){return S&&S.uid}}
+ return{push,leave,top,topAll,GRADES,roomOf,clean,normRoom,myId,token,get uid(){return S&&S.uid}}
 })();

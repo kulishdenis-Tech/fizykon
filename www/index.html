@@ -77,16 +77,16 @@
   <div id="rJoin">
    <p class="note2" style="margin-top:0">Змагайся з друзями! Твій <b>нік</b>, результат (XP і зірки) бачитимуть інші гравці. Нічого особистого не передається: ні імені, ні віку, ні телефону.</p>
    <label>Нік (ім’я або прізвисько)<input id="rNick" maxlength="16" autocomplete="off" placeholder="Придумай нік (не справжнє імʼя)"></label>
-   <label>Код класу (обовʼязково, від 3 символів)<input id="rRoom" maxlength="12" autocomplete="off" placeholder="Домовтеся з друзями, напр. 7Б"></label>
-   <p class="note2">З кодом класу ви побачите таблицю лише своєї групи. Без коду — тільки загальну.</p>
+   <div class="plbl">У якому ти класі? (рейтинг — по паралелі)</div><div class="seg" id="rGrade"></div>
+   <p class="note2">Ми не питаємо ні школу, ні місто, ні справжній клас. Потрібна лише паралель (5, 6, 7…), щоб порівнювати однолітків.</p>
    <div class="row"><button class="btn big" id="rGo">Приєднатись</button><button class="btn ghost" id="rCancel" hidden>Скасувати</button><button class="btn ghost" id="rBack2">← На карту</button></div>
    <button class="btn ghost" id="rLeave" hidden style="margin-top:8px">Вийти з рейтингу</button>
   </div>
   <div id="rBoard" hidden>
    <p class="note2" id="rWho" style="margin-top:0"></p>
-   <div class="seg"><button class="btn ghost" id="rTabRoom">Мій клас</button><button class="btn ghost" id="rTabAll">Усі гравці</button></div>
+   <div class="seg"><button class="btn ghost" id="rTabRoom">Моя паралель</button><button class="btn ghost" id="rTabAll">Усі гравці</button></div>
    <div id="rList"></div>
-   <div class="row"><button class="btn" id="rRefresh">↻ Оновити</button><button class="btn ghost" id="rEdit">Змінити нік / клас</button><button class="btn ghost" id="rBack">← На карту</button></div>
+   <div class="row"><button class="btn" id="rRefresh">↻ Оновити</button><button class="btn ghost" id="rEdit">Змінити нік / паралель</button><button class="btn ghost" id="rBack">← На карту</button></div>
   </div>
   <p class="note2" id="rMsg" style="color:#ff9fb0"></p></div></div>
 <div id="task" class="ov" hidden>
