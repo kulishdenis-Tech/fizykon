@@ -232,6 +232,11 @@ summary{cursor:pointer;font-weight:700}
  #task .thead .btn.ghost,#task .thead .btn{min-height:38px;height:38px;padding:2px 10px;font-size:13px}#task .thead .pill{padding:2px 10px}
  #task .story{grid-row:2;font-size:14px;line-height:1.35;padding:6px 10px;margin:0;overflow:auto;max-height:22vh}
  #task #stp{display:none}
+ #task .tin:has(.story svg){grid-template-columns:minmax(0,42%) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:10px}
+ #task .tin:has(.story svg) .thead{grid-column:1/-1}
+ #task .tin:has(.story svg) .story{grid-row:2;grid-column:1;max-height:none;overflow:auto}
+ #task .tin:has(.story svg) #wb{grid-row:2;grid-column:2}
+ #task .story svg{max-height:68vh;width:100%;height:auto}
  #task #wb{grid-row:3;overflow:auto;min-height:0;font-size:14px;padding:6px 12px}
  #task .card{font-size:14px}#task input,#task select{font-size:15px;padding:4px 6px}
  #task .btn{padding:6px 12px;font-size:14px}#task .btn.big{font-size:15px}
@@ -312,3 +317,5 @@ body.onmap #hud .chip{display:none!important}
 #settings,#settings *{max-width:100%}#settings .sr{flex-wrap:wrap}
 @media (max-height:520px){.labside{overflow-y:auto;max-height:calc(100dvh - 150px);padding-bottom:4px}#pStart,#pStop,#lStart,#lStop{position:sticky;bottom:4px;z-index:3}}
 @media (max-height:520px){.labside .row:has(#pStart),.labside .row:has(#lStart){position:sticky;bottom:0;z-index:3;background:var(--bg,#0b1030);padding:4px 0}}
+
+.fr2{display:inline-flex;flex-direction:column;align-items:center;gap:2px}.fr2 input{width:64px;text-align:center}.fr2 i{display:block;width:72px;height:2px;background:var(--ink,#cfe6ff);border-radius:1px}
