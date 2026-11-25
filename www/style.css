@@ -310,7 +310,7 @@ summary{cursor:pointer;font-weight:700}
 .sr input[type=checkbox]{width:44px;height:44px}
 #pForm .seg .btn{min-height:44px}
 @media (max-height:520px){
- #task .btn[data-a=to3],#task .btn[data-a=to4],#task .btn[data-a=next],#task .btn[data-a=chk1],#task .btn[data-a=chk4],#lChk,#pChk,#gChk,#bChk,#dChk{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}
+ #task .btn[data-a=to3],#task .btn[data-a=to4],#task .btn[data-a=next],#task .btn[data-a=chk1],#task .btn[data-a=chk4],#lChk,#pChk,#bChk,#dChk{position:sticky;bottom:6px;z-index:3;box-shadow:0 0 0 6px rgba(7,10,34,.92)}
 }
 /* карта: чипи забігу ховаємо, портрет налаштувань не ширший за екран */
 body.onmap #hud .chip{display:none!important}
@@ -319,3 +319,7 @@ body.onmap #hud .chip{display:none!important}
 @media (max-height:520px){.labside .row:has(#pStart),.labside .row:has(#lStart){position:sticky;bottom:0;z-index:3;background:var(--bg,#0b1030);padding:4px 0}}
 
 .fr2{display:inline-flex;flex-direction:column;align-items:center;gap:2px}.fr2 input{width:64px;text-align:center}.fr2 i{display:block;width:72px;height:2px;background:var(--ink,#cfe6ff);border-radius:1px}
+
+.labvis{display:flex;align-items:center;justify-content:center}.labsvg{width:100%;max-width:260px;height:auto;max-height:46vh}
+@media (max-height:520px){.labsvg{max-height:38vh}.labvis{position:sticky;top:0}}
+@media (max-height:520px){.lab:has(.gfoot) .labside{max-height:none;overflow:visible}.gfoot{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;margin-top:2px}.gfoot .g{padding:0;margin:0;flex:1 1 auto;min-width:0}.gfoot .g input{width:86px}.gfoot .btn{min-height:40px;padding:4px 12px;flex:0 0 auto}.labside .conv{font-size:12.5px;line-height:1.28;margin:2px 0}.labside .big{font-size:15px;margin:2px 0;min-height:0!important}.labside .msg{min-height:16px;margin:2px 0;font-size:13px}.lab:has(.gfoot) .labvis{position:static}}
